@@ -1,0 +1,47 @@
+<h3 class="my-4" style="text-align: center">Departments</h3>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>department name</th>
+        <th>edit</th>
+        <th>delete</th>
+        <th>list</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for (var i in departments) { %>
+    <tr>
+        <td><%= departments[i].department_ID %></td>
+        <td><%= departments[i].department_name %></td>
+        <td>
+            <a href="/department?id=<%= departments[i].department_ID %>" class="btn btn-secondary btn-block">edit</a>
+        </td>
+        <td>
+            <button onclick="drop(<%= departments[i].department_ID %>)" type="button" class="btn btn-secondary btn-block">delete</button>
+        </td>
+        <td>
+            <a href="/employees-list?department=<%= departments[i].department_name %>" class="btn btn-secondary btn-block">list</a>
+        </td>
+    </tr>
+    <% } %>
+    <tr>
+        <td colspan="2">
+            <a href="/department" class="btn btn-secondary btn-block">add</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+
+<script>
+
+	function drop(id) {
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/drop-department', true);
+		xhr.setRequestHeader("Content-type", "application/json");
+		xhr.send(JSON.stringify({id: id}));
+		window.location.reload(true);
+	}
+
+</script>
