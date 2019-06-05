@@ -1,0 +1,63 @@
+<h3 class="my-4 title text-center">Log In</h3>
+
+<form class="mx-auto" style="width: 40%">
+    <div class="form-group">
+        <label for="name">Username</label>
+        <span class="validation invalid pl-4">This field is required</span>
+        <input type="text" class="form-control" id="username" name="username" required/>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <span class="validation invalid pl-4">This field is required</span>
+        <input type="password" class="form-control" id="password" name="password" required/>
+    </div>
+    <div>
+        <input onclick="handleForm(event, this.form)"
+               type="submit"
+               class="btn btn-secondary float-right"
+               style="width: 200px"
+               value="Login"
+        />
+        <a href="/signup">Sign up</a>
+        <span class="validation unknown-user pl-4">Invalid username or password!</span>
+        <span class="validation error pl-4">ERROR!</span>
+    </div>
+</form>
+
+<script>
+
+    function handleForm(e, form) {
+        e.preventDefault();
+
+        document.querySelectorAll('.validation').forEach((i) => i.style.display = 'none');
+
+        const elems = form.elements;
+        const fields = Array.from(form.elements);
+        const requiredFields = fields.filter(i => i.required);
+        requiredFields.forEach((i) => {
+            if (!i.value) {
+                i.closest('.form-group').querySelector('.invalid').style.display = 'inline-block';
+            }
+        });
+
+        const invalidFields = Array.from(document.querySelectorAll('.invalid'));
+        if(invalidFields.some(i => i.style.display === 'inline-block')) {
+            return;
+        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/checkUser', true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.send(JSON.stringify({username: elems.username.value, password: elems.password.value}));
+        xhr.onreadystatechange = () => {
+            if(xhr.readyState === 4) {
+            	if(xhr.responseText === 'unknown user') {
+                    document.querySelector('.unknown-user').style.display = 'inline-block';
+                } else {
+                    window.location.href = '/';
+                }
+            }
+        }
+    }
+
+</script>

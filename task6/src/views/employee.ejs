@@ -1,0 +1,162 @@
+<h3 class="my-4 title text-center">
+    <% if (!!id) { %>
+        Edit employee info
+    <% } else { %>
+        Add new employee
+    <% } %>
+</h3>
+
+<form class="mx-auto" style="width: 40%">
+    <input type="hidden" class="form-control" id="id" name="id" value="<%= id %>"/>
+    <input type="hidden" class="form-control" id="department" name="department" value="<%= department %>"/>
+    <div class="form-group">
+        <label for="name">name *</label>
+        <span class="validation invalid pl-4">This field is required</span>
+        <input type="text" class="form-control" id="name" name="name" value="<%= employee.name %>" required/>
+    </div>
+    <div class="form-group">
+        <label for="email">email *</label>
+        <span class="validation invalid pl-4">This field is required</span>
+        <span class="validation not-unique pl-4">Value must be unique</span>
+        <span class="validation invalid-email pl-4">Invalid email</span>
+        <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="<%= employee.email %>"
+                required
+        />
+    </div>
+    <div class="form-group">
+        <label for="birthday">birthday *</label>
+        <span class="validation invalid-date pl-4">date format yyyy-mm-dd</span>
+        <span class="validation invalid pl-4">This field is required</span>
+        <input type="text"
+               class="form-control"
+               id="birthday"
+               name="birthday"
+               value="<%= employee.birthday %>"
+               required
+        />
+    </div>
+    <div class="form-group">
+        <label for="salary">salary *</label>
+        <span class="validation invalid pl-4">This field is required</span>
+        <input type="number" class="form-control" id="salary" name="salary" value="<%= employee.salary %>" required/>
+    </div>
+    <div>
+        <input
+                onclick="handleForm(event, this.form)"
+                type="submit"
+                class="btn btn-secondary float-right"
+                style="width: 200px"
+                value=<% if (!!id) { %> 'Edit'
+        <% } else { %> 'Add'
+        <% } %>
+        />
+        <a href="/employees-list?department_id=<%= department %>" class="btn btn-secondary"><</a>
+        <span class="validation success-add pl-4">New employee was added</span>
+        <span class="validation success-edit pl-4">Employee info was edited</span>
+        <span class="validation error pl-4">ERROR!</span>
+    </div>
+</form>
+
+<script>
+
+	window.onload = function(params) {
+		if (params === 'id') {
+			return document.querySelector('#id').value;
+		}
+		if (params === 'department') {
+			return document.querySelector('#department').value;
+		}
+	};
+
+	const id = window.onload('id');
+	const department = window.onload('department');
+
+	function validateEmail(email) {
+		const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return re.test(email.toLowerCase());
+	}
+
+	function validateDate(date) {
+		const re = /(\d{4})-(\d{2})-(\d{2})/;
+		return re.test(date);
+	}
+
+	function handleForm(e, form) {
+
+		e.preventDefault();
+
+		document.querySelectorAll('.validation').forEach((i) => i.style.display = 'none');
+		const elems = form.elements;
+		const fields = Array.from(form.elements);
+		const requiredFields = fields.filter(i => i.required);
+		requiredFields.forEach((i) => {
+			if (!i.value) {
+				i.closest('.form-group').querySelector('.invalid').style.display = 'inline-block';
+			}
+		});
+
+		if (form.email.value && !validateEmail(form.email.value)) {
+			document.querySelector('.invalid-email').style.display = 'inline-block';
+			return;
+		}
+
+		if (form.birthday.value && !validateDate(form.birthday.value)) {
+			document.querySelector('.invalid-date').style.display = 'inline-block';
+			return;
+		}
+
+
+		const invalidFields = Array.from(document.querySelectorAll('.invalid'));
+		if (invalidFields.some(i => i.style.display === 'inline-block')) {
+			return;
+		}
+
+		const xhr = new XMLHttpRequest();
+
+		if (id === '') {
+			xhr.open('POST', '/add-employee', true);
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.send(JSON.stringify({
+				department: department,
+				name: elems.name.value,
+				email: elems.email.value,
+				birthday: elems.birthday.value,
+				salary: elems.salary.value
+			}));
+		} else {
+			xhr.open('POST', '/edit-employee', true);
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.send(JSON.stringify({
+				department: department,
+				id: elems.id.value,
+				name: elems.name.value,
+				email: elems.email.value,
+				birthday: elems.birthday.value,
+				salary: elems.salary.value
+			}));
+		}
+
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4) {
+				if (xhr.responseText === 'Email is not unique') {
+					document.querySelector('.not-unique').style.display = 'inline-block';
+				} else if (xhr.responseText === 'Success') {
+					const title = document.querySelector('.title').innerText;
+					if (title === 'Add new employee') {
+						document.querySelector('.success-add').style.display = 'inline-block';
+					} else {
+						document.querySelector('.success-edit').style.display = 'inline-block';
+					}
+				} else {
+					document.querySelector('.error').style.display = 'inline-block';
+				}
+			}
+		}
+	}
+
+</script>
