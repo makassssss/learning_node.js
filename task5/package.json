@@ -1,0 +1,33 @@
+{
+  "name": "task3",
+  "version": "1.0.0",
+  "description": "task2 with express",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "mysql": "^2.15.0",
+    "mysql2": "^1.5.1",
+    "sequelize": "^4.31.0",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.4",
+    "nodemon": "^1.19.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel": "babel src -d dist",
+    "lint": "eslint 'src/*.js'",
+    "copy-views": "cp -R src/views dist",
+    "build": "npm run babel && npm run copy-views",
+    "dev": "nodemon --exec babel-node src/server.js",
+    "prod": "npm run build && node dist/server.js"
+  },
+  "author": "Maxim Babichev",
+  "license": "ISC"
+}
