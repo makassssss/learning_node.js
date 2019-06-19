@@ -1,20 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as url from 'query-string';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../../redux/actions/actionCreators';
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	departments: state.departments,
 	addSuccess: state.addSuccess.department,
 	editSuccess: state.editSuccess.department,
 	fail: state.fail.department,
 });
 
-const mapDispatchToProps = (dispatch) => {
-	return bindActionCreators(actionCreators, dispatch);
-};
+const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
 class Department extends React.Component {
 
@@ -30,13 +29,13 @@ class Department extends React.Component {
 		const { departmentId } = this.state;
 		const { departments } = this.props;
 		if (departmentId) {
-			departments.forEach(department => {
+			departments.forEach((department) => {
 				if (department.department_id === departmentId) {
 					this.setState({
 						departmentName: department.department_name,
-					})
+					});
 				}
-			})
+			});
 		}
 	}
 
@@ -51,8 +50,8 @@ class Department extends React.Component {
 		e.preventDefault();
 		const { departmentId, departmentName } = this.state;
 		departmentId
-		? this.props.editDepartment(departmentId, departmentName)
-		: this.props.addDepartment(departmentName);
+			? this.props.editDepartment(departmentId, departmentName)
+			: this.props.addDepartment(departmentName);
 	};
 
 
@@ -106,19 +105,30 @@ class Department extends React.Component {
 								<span className="btn btn-secondary">{`<`}</span>
 							</Link>
 							{
-								addSuccess &&
+								addSuccess && (
 									<span className="validation success pl-4">New department was added</span>
+								)
 							}
 							{
-								editSuccess &&
+								editSuccess && (
 									<span className="validation success pl-4">The department was edited</span>
+								)
 							}
 						</div>
 					</form>
 				</main>
 			</div>
-		)
+		);
 	}
 }
+
+Department.propTypes = {
+	departments: PropTypes.array,
+	addDepartment: PropTypes.func,
+	editDepartment: PropTypes.func,
+	addSuccess: PropTypes.bool,
+	editSuccess: PropTypes.bool,
+	fail: PropTypes.bool,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Department);

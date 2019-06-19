@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Route, Redirect, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,9 +10,7 @@ const mapStateToProps = state => ({
 	isLoading: state.isLoading,
 });
 
-const mapDispatchToProps = (dispatch) => {
-	return bindActionCreators(actionCreators, dispatch);
-};
+const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
 const PrivateRoute = ({ ...props }) => {
 
@@ -34,12 +33,17 @@ const PrivateRoute = ({ ...props }) => {
 						Log Out
 					</span>
 					{
-						!props.isLoading && <Route {...props}/>
+						!props.isLoading && <Route {...props} />
 					}
 				</>
 			)
-			: <Redirect to="/login"/>
+			: <Redirect to="/login" />
 	);
+};
+
+PrivateRoute.propTypes = {
+	isLoading: PropTypes.bool,
+	history: PropTypes.object,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(PrivateRoute));
