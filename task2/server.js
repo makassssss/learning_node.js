@@ -1,4 +1,3 @@
-
 /* eslint-disable object-shorthand, vars-on-top, prefer-destructuring, no-shadow, import/no-unresolved */
 
 var http = require('http');
