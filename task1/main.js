@@ -1,63 +1,50 @@
-"use strict";
-
-var department = {
-	0: {
+var department1 = [
+	{
 		id: 0,
 		salary: 100,
 	},
-	1: {
+	{
 		id: 1,
 		salary: 200,
 	},
-	2: {
+	{
 		id: 2,
 		salary: 300,
 	},
-	3: {
+	{
 		id: 3,
 		salary: 400,
 	},
-};
-
-var averageSalary = function(department) {
-	var result,
-		sum = 0,
-		counter = 0;
-	for (var i in department) {
-		counter++;
-		sum += department[i].salary;
-	}
-	result = Math.round(sum / counter);
-	return result;
-};
-
-console.log(averageSalary(department));
+];
 
 var outlay = function(department) {
-	var arr = [];
-	for (var i in department) {
-		arr.push(department[i].salary);
-	}
-	var result = arr.reduce(function(a, b) {
-		return a + b;
-	});
+	var result = department.reduce(function(sum, current) {
+		return sum + current.salary;
+	}, 0);
 	return result;
 };
 
-console.log(outlay(department));
+console.log(outlay(department1));
+
+var averageSalary = function(department) {
+	var result = Math.round(outlay(department) / department.length);
+	return result;
+};
+
+console.log(averageSalary(department1));
 
 var poorGuys = function(department) {
 	var povertyLine = averageSalary(department);
-	var arr = Object.entries(department);
-	var result = arr.filter(function(i) {
-		if (i[1].salary < povertyLine) {
+	var result = department.filter(function(i) {
+		if (i.salary < povertyLine) {
 			return i;
 		}
+		return;
 	});
 	return result;
 };
 
-console.log(poorGuys(department));
+console.log(poorGuys(department1));
 
 var Employee = function(departmentName, employeeName, salary) {
 	this.department = departmentName;
