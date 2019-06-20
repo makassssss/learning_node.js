@@ -11,6 +11,7 @@
 </head>
 <body>
 
+<a href="/" class="btn btn-secondary position-absolute ml-3"><</a>
 <h3 class="my-4" style="text-align: center">Employees of <%= department %></h3>
 <table class="table table-bordered">
     <thead>
@@ -36,7 +37,13 @@
             <a href="/employee?department=<%= department %>&id=<%= employees[i].employee_ID %>" class="btn btn-secondary btn-block">Edit</a>
         </td>
         <td>
-            <button onclick="layOff(<%= employees[i].employee_ID%>)" type="button" class="btn btn-secondary btn-block">delete</button>
+            <button
+                    type="button"
+                    class="btn btn-secondary btn-block"
+                    id=<%= employees[i].employee_ID%>
+            >
+                delete
+            </button>
         </td>
     </tr>
     <% } %>
@@ -48,20 +55,9 @@
     </tbody>
 </table>
 
-
-<script>
-
-    function layOff(id) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', '/layOff', true);
-        xhr.send(JSON.stringify({id: id}));
-        window.location.reload(true);
-    }
-
-</script>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -72,5 +68,34 @@
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous">
 </script>
+
+<script>
+
+	$(document).ready(function() {
+		$('button[type=button]').click(function(e) {
+			var deleteEmployee = confirm('Are you sure?');
+			var data = {
+				id: e.target.id,
+			};
+			if (deleteEmployee) {
+				$.ajax({
+					url: '/layOff',
+					type: 'post',
+					data: JSON.stringify(data),
+					success: function() {
+						window.location.reload(true);
+					},
+					error: function(err) {
+						console.log(err);
+					},
+				});
+			} else {
+				return false;
+			}
+		})
+	})
+
+</script>
+
 </body>
 </html>

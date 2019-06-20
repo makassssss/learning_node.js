@@ -9,7 +9,7 @@
           integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
     <title>departments & employees</title>
     <style type="text/css">
-        .invalid, .not-unique, .invalid-date, .invalid-email, .error {
+        .invalid, .not-unique, .invalid-email {
             display: none;
             color: red;
         }
@@ -30,7 +30,7 @@
     <% } %>
 </h3>
 
-<form class="mx-auto" style="width: 40%">
+<form id="form" class="mx-auto" style="width: 40%">
     <input type="hidden" class="form-control" id="id" name="id"  value="<%= id %>" />
     <input type="hidden" class="form-control" id="department" name="department"  value="<%= department %>" />
     <div class="form-group">
@@ -54,7 +54,6 @@
     </div>
     <div class="form-group">
         <label for="birthday">birthday *</label>
-        <span class="validation invalid-date pl-4">date format yyyy-mm-dd</span>
         <span class="validation invalid pl-4">This field is required</span>
         <input type="text"
                class="form-control"
@@ -71,7 +70,6 @@
     </div>
     <div>
         <input
-                onclick="handleForm(event, this.form)"
                 type="submit"
                 class="btn btn-secondary float-right"
                 style="width: 200px"
@@ -84,96 +82,11 @@
         <a href="/employees-list?department=<%= department %>" class="btn btn-secondary"><</a>
         <span class="validation success-add pl-4">New employee was added</span>
         <span class="validation success-edit pl-4">Employee info was edited</span>
-        <span class="validation error pl-4">ERROR!</span>
     </div>
 </form>
 
-<script>
-
-    window.onload = function(params) {
-        if (params === 'id') {
-            return document.querySelector('#id').value;
-        }
-        if (params === 'department') {
-            return document.querySelector('#department').value;
-        }
-    };
-
-    const id = window.onload('id');
-    const department = window.onload('department');
-
-    function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email.toLowerCase());
-    }
-
-    function validateDate(date) {
-        const re = /(\d{4})-(\d{2})-(\d{2})/;
-        return re.test(date);
-    }
-
-    function handleForm(e, form) {
-
-        e.preventDefault();
-
-        document.querySelectorAll('.validation').forEach((i) => i.style.display = 'none');
-        const elems = form.elements;
-        const fields = Array.from(form.elements);
-        const requiredFields = fields.filter(i => i.required);
-        requiredFields.forEach((i) => {
-           if (!i.value) {
-               i.closest('.form-group').querySelector('.invalid').style.display = 'inline-block';
-           }
-        });
-
-        if (form.email.value && !validateEmail(form.email.value)) {
-            document.querySelector('.invalid-email').style.display = 'inline-block';
-            return;
-        }
-
-        if(form.birthday.value && !validateDate(form.birthday.value)) {
-            document.querySelector('.invalid-date').style.display = 'inline-block';
-            return;
-        }
-
-
-        const invalidFields = Array.from(document.querySelectorAll('.invalid'));
-        if(invalidFields.some(i => i.style.display === 'inline-block')) {
-            return;
-        }
-
-        const xhr = new XMLHttpRequest();
-
-        if (id === '') {
-            xhr.open('POST', '/addEmployee', true);
-            xhr.send(JSON.stringify({department: department, name: elems.name.value, email: elems.email.value, birthday: elems.birthday.value, salary: elems.salary.value}));
-        } else {
-            xhr.open('POST', '/editInfo', true);
-            xhr.send(JSON.stringify({department: department, employee_ID: elems.id.value, name: elems.name.value, email: elems.email.value, birthday: elems.birthday.value, salary: elems.salary.value}));
-        }
-
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.responseText === 'Email is not unique') {
-                    document.querySelector('.not-unique').style.display = 'inline-block';
-                } else if (xhr.responseText === 'Success') {
-                    const title = document.querySelector('.title').innerText;
-                    if (title === 'Add new employee') {
-                        document.querySelector('.success-add').style.display = 'inline-block';
-                    } else {
-                        document.querySelector('.success-edit').style.display = 'inline-block';
-                    }
-                } else {
-                    document.querySelector('.error').style.display = 'inline-block';
-                }
-            }
-        }
-    }
-
-</script>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -184,5 +97,76 @@
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous">
 </script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+
+    	$.validator.addMethod("dateFormat",
+			function(value) {
+				return value.match(/(\d{4})-(\d{2})-(\d{2})/);
+			},
+			"Date format yyyy-mm-dd"
+		);
+
+    	var handleFormSubmit = function() {
+			$('.validation').css('display', 'none');
+			$('#form').validate({
+                rules: {
+                    name: 'required',
+                    email: {
+                    	required: true,
+                    	email: true,
+                    },
+                    birthday: {
+                    	required: true,
+						dateFormat : true,
+                    },
+                    salary: 'required'
+                },
+				errorPlacement: function(error, element) {
+					error.insertBefore(element);
+					error.css('color', 'red');
+					error.css('padding-left', '1rem');
+				},
+				submitHandler: function(form, e) {
+                    e.preventDefault();
+                    var data = {
+						department: form.department.value,
+                        employee_ID: form.id.value,
+                    	name: form.name.value,
+                        email: form.email.value,
+                        birthday: form.birthday.value,
+                        salary: form.salary.value,
+                    };
+					$.ajax({
+						url: '/setEmployee',
+						type: 'post',
+						data: JSON.stringify(data),
+						success: function() {
+							if (form.id.value) {
+								$('.success-edit').css('display', 'inline-block');
+							} else {
+								$('.success-add').css('display', 'inline-block');
+							}
+						},
+						error: function(res) {
+							if (res.responseText === 'Email is not unique') {
+								$('.not-unique').css('display', 'inline-block');
+							}
+						}
+					})
+                },
+            });
+        }
+
+        $('input[type=submit]').click(function() {
+			handleFormSubmit();
+        });
+    });
+
+</script>
+
 </body>
 </html>

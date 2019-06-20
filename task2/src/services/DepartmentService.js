@@ -4,12 +4,7 @@ var pool = require('../../server');
 
 function checkName(departmentName, id) {
 	return new Promise(function(resolve) {
-		var sql;
-		if (id) {
-			sql = mysql.format('SELECT EXISTS(SELECT * FROM departments WHERE department_name=? AND department_ID!=?)', [departmentName, id]); // eslint-disable-line max-len
-		} else {
-			sql = mysql.format('SELECT EXISTS(SELECT * FROM departments WHERE department_name=?)', departmentName);
-		}
+		var sql = mysql.format('SELECT EXISTS(SELECT * FROM departments WHERE department_name=? AND department_ID!=?)', [departmentName, id]); //eslint-disable-line max-len
 		pool.pool.query(sql, function(error, result) {
 			if (error) throw error;
 			resolve(result[0][Object.keys(result[0])]);
@@ -50,7 +45,7 @@ DepartmentService.prototype.setDepartment = function(departmentName, id) {
 			if (exists) {
 				resolve('Value is not unique');
 			} else {
-				var sql; //eslint-disable-line vars-on-top
+				var sql;
 				if (!id) {
 					sql = mysql.format('INSERT INTO departments (department_name) VALUES (?)', departmentName);
 				} else {

@@ -28,12 +28,20 @@
             <td><%= departments[i].department_ID %></td>
             <td><%= departments[i].department_name %></td>
             <td>
-                <a href="/department?id=<%= departments[i].department_ID %>"
-                   class="btn btn-secondary btn-block">edit</a>
+                <a
+                   href="/department?id=<%= departments[i].department_ID %>"
+                   class="btn btn-secondary btn-block"
+                >
+                    edit
+                </a>
             </td>
             <td>
-                <button onclick="drop(<%= departments[i].department_ID %>)" type="button"
-                        class="btn btn-secondary btn-block">delete
+                <button
+                    class="btn btn-secondary btn-block"
+                    type="button"
+                    id=<%= departments[i].department_ID %>
+                >
+                    delete
                 </button>
             </td>
             <td>
@@ -50,20 +58,9 @@
     </tbody>
 </table>
 
-
-<script>
-
-	function drop(id) {
-		const xhr = new XMLHttpRequest();
-		xhr.open('POST', '/drop-department', true);
-		xhr.send(JSON.stringify({ id: id }));
-		window.location.reload(true);
-	}
-
-</script>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous">
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -74,5 +71,34 @@
         integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
         crossorigin="anonymous">
 </script>
+
+<script>
+
+    $(document).ready(function() {
+    	$('button[type=button]').click(function(e) {
+    		var deleteDepartment = confirm('Are you sure?');
+    		var data = {
+    			id: e.target.id,
+            };
+    		if (deleteDepartment) {
+				$.ajax({
+					url: '/drop-department',
+					type: 'post',
+					data: JSON.stringify(data),
+					success: function() {
+						window.location.reload(true);
+					},
+					error: function(err) {
+						console.log(err);
+					},
+				});
+            } else {
+    			return false;
+            }
+        })
+    })
+
+</script>
+
 </body>
 </html>

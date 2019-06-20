@@ -4,12 +4,7 @@ var pool = require('../../server');
 
 function checkEmail(email, id) {
 	return new Promise(function(resolve) {
-		var sql;
-		if (id) {
-			sql = mysql.format('SELECT EXISTS(SELECT * FROM employees WHERE email=? AND employee_ID!=?)', [email, id]); // eslint-disable-line max-len
-		} else {
-			sql = mysql.format('SELECT EXISTS(SELECT * FROM employees WHERE email=?)', email);
-		}
+		var sql = mysql.format('SELECT EXISTS(SELECT * FROM employees WHERE email=? AND employee_ID!=?)', [email, id]); // eslint-disable-line max-len
 		pool.pool.query(sql, function(error, result) {
 			if (error) throw error;
 			resolve(result[0][Object.keys(result[0])]);
