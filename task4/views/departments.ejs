@@ -15,17 +15,13 @@
             <td><%= departments[i].department_id %></td>
             <td><%= departments[i].department_name %></td>
             <td>
-                <a href="/department?department_id=<%= departments[i].department_id %>"
-                   class="btn btn-secondary btn-block">edit</a>
+                <a href="/department?id=<%= departments[i].department_id %>" class="btn btn-secondary btn-block">edit</a>
             </td>
             <td>
-                <button onclick="drop(<%= departments[i].department_id %>)" type="button"
-                        class="btn btn-secondary btn-block">delete
-                </button>
+                <button id=<%= departments[i].department_id %> type="button" class="btn btn-secondary btn-block">delete</button>
             </td>
             <td>
-                <a href="/employees-list?department_id=<%= departments[i].department_id %>"
-                   class="btn btn-secondary btn-block">list</a>
+                <a href="/employees-list?department=<%= departments[i].department_id %>" class="btn btn-secondary btn-block">list</a>
             </td>
         </tr>
     <% } %>
@@ -37,15 +33,30 @@
     </tbody>
 </table>
 
-
 <script>
 
-	function drop(id) {
-		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '/drop-department', true);
-		xhr.setRequestHeader("Content-type", "application/json");
-		xhr.send(JSON.stringify({ id: id }));
-		window.location.reload(true);
-	}
+	$(document).ready(function() {
+		$('button[type=button]').click(function(e) {
+			var deleteDepartment = confirm('Are you sure?');
+			var data = {
+				id: e.target.id,
+			};
+			if (deleteDepartment) {
+				$.ajax({
+					url: '/drop-department',
+					type: 'post',
+					data: data,
+					success: function() {
+						window.location.reload(true);
+					},
+					error: function(err) {
+						console.log(err);
+					},
+				});
+			} else {
+				return false;
+			}
+		})
+	})
 
 </script>

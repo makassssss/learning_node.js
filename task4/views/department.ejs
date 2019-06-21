@@ -6,74 +6,62 @@
     <% } %>
 </h3>
 
-<form class="mx-auto" style="width: 40%">
+<form id="form" class="mx-auto" style="width: 40%">
     <input type="hidden" class="form-control" id="id" name="id" value="<%= id %>"/>
     <div class="form-group">
         <label for="name">department name *</label>
-        <span class="validation invalid pl-4">This field is required</span>
         <span class="validation not-unique pl-4">Value must be unique</span>
         <input type="text" class="form-control" id="name" name="name" value="<%= name %>" required/>
     </div>
     <div>
-        <input onclick="handleForm(event, this.form)"
-               type="submit"
+        <input type="submit"
                class="btn btn-secondary float-right"
-               style="width: 200px"
-               value=<% if (!!id) { %> 'Edit'
-        <% } else { %> 'Add'
-        <% } %>
+               value="Save"
         />
         <a href="/" class="btn btn-secondary"><</a>
-        <span class="validation success-add pl-4">New department was added</span>
-        <spann class="validation success-edit pl-4">The department was edited</spann>
     </div>
 </form>
 
 <script>
-
-	window.onload = function() {
-		return document.querySelector('#id').value;
-	};
-
-	var id = window.onload();
-
-	function handleForm(e, form) {
-		e.preventDefault();
-		var xhr = new XMLHttpRequest();
-		var nameField = form.elements.name;
-		document.querySelectorAll('.validation').forEach(function(i) {
-			i.style.display = 'none'
-		});
-		if (nameField.value.length === 0) {
-			document.querySelector('.invalid').style.display = 'inline-block';
-		} else {
-			document.querySelector('.invalid').style.display = 'none';
-			if (id === '') {
-				xhr.open('POST', '/add-department', true);
-				xhr.setRequestHeader("Content-type", "application/json");
-				xhr.send(JSON.stringify({ department_name: nameField.value }));
-			} else {
-				xhr.open('POST', '/edit-department', true);
-				xhr.setRequestHeader("Content-type", "application/json");
-				xhr.send(JSON.stringify({ id: id, department_name: nameField.value }));
-			}
-
-			xhr.onreadystatechange = function() {
-				if (xhr.readyState === 4) {
-					if (xhr.responseText === 'Value is not unique') {
-						document.querySelector('.not-unique').style.display = 'inline-block';
-					} else {
-						document.querySelector('.not-unique').style.display = 'none';
-						var title = document.querySelector('.title').innerText;
-						if (title === 'Add new department') {
-							document.querySelector('.success-add').style.display = 'inline-block';
-						} else {
-							document.querySelector('.success-edit').style.display = 'inline-block';
+	$(document).ready(function() {
+		var handleFormSubmit = function() {
+			$('.validation').css('display', 'none');
+			$('#form').validate({
+				rules: {
+					name: 'required',
+				},
+				errorPlacement: function(error, element) {
+					error.insertBefore(element);
+					error.css('color', 'red');
+					error.css('padding-left', '1rem');
+				},
+				submitHandler: function(form, e) {
+					e.preventDefault();
+					var data = {
+						id: form.id.value,
+						department_name: form.name.value,
+					};
+					$.ajax({
+						url: '/setDepartment',
+						type: 'post',
+						data: data,
+						success: function() {
+							window.location = '/';
+						},
+						error: function(res) {
+							if (res.responseText === 'Value is not unique') {
+								$('.not-unique').css('display', 'inline-block');
+							}
 						}
-					}
+					})
+				},
+				invalidHandler: function(err) {
+					console.log(err);
 				}
-			}
+			})
 		}
-	}
-
+		$('input[type=submit]').click(function() {
+			handleFormSubmit();
+		});
+	});
 </script>

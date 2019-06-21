@@ -32,7 +32,7 @@ router.post('/drop-department', function(req, res) {
 });
 
 router.get('/department', function(req, res) {
-	var departmentId = req.query.department_id;
+	var departmentId = req.query.id;
 	models.departments.find({
 		where: {
 			department_id: departmentId,
@@ -53,25 +53,17 @@ router.get('/department', function(req, res) {
 	});
 });
 
-router.post('/add-department', function(req, res) {
-	var departmentName = req.body.department_name;
-	models.departments.prototype.addDepartment(departmentName).then(function() {
-		res.end();
-	}).then(function() {
-		logToDB('add department');
-	}).catch(function(err) {
-		Logger.error(err);
-		res.status(500).send(err.message);
-	});
-});
-
-router.post('/edit-department', function(req, res) {
+router.post('/setDepartment', function(req, res) {
 	var departmentName = req.body.department_name;
 	var id = req.body.id;
-	models.departments.prototype.editDepartment(departmentName, id).then(function() {
+	models.departments.prototype.setDepartment(departmentName, id).then(function() {
 		res.end();
 	}).then(function() {
-		logToDB('edit department');
+		if (id) {
+			logToDB('edit department');
+		} else {
+			logToDB('add department');
+		}
 	}).catch(function(err) {
 		Logger.error(err);
 		res.status(500).send(err.message);

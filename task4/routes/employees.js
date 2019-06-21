@@ -8,7 +8,7 @@ var logToDB = require('../logger/logToDB');
 var router = express.Router();
 
 router.get('/employees-list', function(req, res) {
-	var departmentId = req.query.department_id;
+	var departmentId = req.query.department;
 	models.departments.find({
 		where: {
 			department_id: departmentId,
@@ -24,7 +24,7 @@ router.get('/employees-list', function(req, res) {
 			res.render('index.ejs', {
 				employees: employees,
 				departmentId: departmentId,
-				department_name: department.dataValues.department_name,
+				departmentName: department.dataValues.department_name,
 				view: 'list',
 			});
 		}).then(function() {
@@ -49,7 +49,7 @@ router.post('/layOff', function(req, res) {
 
 router.get('/employee', function(req, res) {
 	var id = req.query.id;
-	var department = req.query.department_id;
+	var department = req.query.department;
 	models.employees.find({
 		where: {
 			id: id,
@@ -62,7 +62,6 @@ router.get('/employee', function(req, res) {
 		}
 		res.render('index.ejs', {
 			employee: employee,
-			id: id,
 			department: department,
 			view: 'employee',
 		});
@@ -74,42 +73,17 @@ router.get('/employee', function(req, res) {
 	});
 });
 
-router.post('/add-employee', function(req, res) {
-	var departmentId = req.body.department_id;
-	var name = req.body.name;
-	var email = req.body.email;
-	var birthday = req.body.birthday;
-	var salary = req.body.salary;
-	models.employees.create({
-		name: name,
-		email: email,
-		birthday: birthday,
-		salary: salary,
-		department_id: departmentId,
-	}).then(function() {
-		res.end('Success');
-	}).then(function() {
-		logToDB('add employee');
-	}).catch(function(err) {
-		if (err.errors && err.errors[0].message === 'email must be unique') {
-			res.end('Email is not unique');
-		} else {
-			res.status(500).send(err.message);
-		}
-		Logger.error(err);
-	});
-});
-
-router.post('/edit-employee', function(req, res) {
+router.post('/setEmployee', function(req, res) {
+	var department = req.body.department;
 	var id = req.body.id;
 	var name = req.body.name;
 	var email = req.body.email;
 	var birthday = req.body.birthday;
 	var salary = req.body.salary;
-	models.employees.prototype.editEmployeeInfo(id, name, email, birthday, salary).then(function() {
+	models.employees.prototype.setEmployee(id, name, email, birthday, salary, department).then(function() {
 		res.end('Success');
 	}).catch(function(err) {
-		res.end(err.message);
+		res.status(400).end(err.message);
 	});
 });
 

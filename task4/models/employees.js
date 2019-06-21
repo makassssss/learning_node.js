@@ -36,18 +36,30 @@ module.exports = function(sequelize, DataTypes) {
 		});
 	};
 
-	employees.prototype.editEmployeeInfo = function(id, name, email, birthday, salary) {
+	employees.prototype.setEmployee = function(id, name, email, birthday, salary, department) {
 		return sequelize.transaction(function(t) {
-			return employees.update(
-				{
+			var promise;
+			if (id) {
+				promise = employees.update(
+					{
+						name: name,
+						email: email,
+						birthday: birthday,
+						salary: salary,
+					},
+					{ where: { id: id } },
+					{ transaction: t },
+				);
+			} else {
+				promise = employees.create({
 					name: name,
 					email: email,
 					birthday: birthday,
 					salary: salary,
-				},
-				{ where: { id: id } },
-				{ transaction: t },
-			).catch(function(err) {
+					department_id: department,
+				});
+			}
+			return promise.catch(function(err) {
 				err.errors.forEach(function(i) {
 					if (i.message === 'email must be unique') {
 						throw new Error('Email is not unique');
