@@ -28,33 +28,29 @@ export default (sequelize, DataTypes) => {
 		});
 	};
 
-	departments.prototype.addDepartment = name => (
-		sequelize.transaction(function(t) {
-			return sequelize.query('INSERT INTO departments (department_name) VALUES (?)', {
-				type: sequelize.QueryTypes.INSERT,
-				replacements: [name],
-			}, { transaction: t }).catch((err) => {
-				err.errors.forEach((i) => {
-					if (i.message === 'department_name must be unique') throw new Error('Value is not unique');
+	departments.prototype.setDepartment = (name, id) => (
+		sequelize.transaction((t) => {
+			const promise = id ? (
+				departments.update(
+					{ department_name: name },
+					{ where: { department_id: id } },
+					{ transaction: t },
+				)
+			) : (
+				sequelize.query('INSERT INTO departments (department_name) VALUES (?)', {
+					type: sequelize.QueryTypes.INSERT,
+					replacements: [name],
+				}, { transaction: t })
+			);
+			return promise.catch(function(err) {
+				err.errors.forEach(function(i) {
+					if (i.message === 'department_name must be unique') {
+						throw new Error('Value is not unique');
+					}
 				});
 				console.log(err);
 			});
 		})
-	);
-
-	departments.prototype.editDepartment = (name, id) => (
-		sequelize.transaction(t => (
-			departments.update(
-				{ department_name: name },
-				{ where: { department_id: id } },
-				{ transaction: t },
-			).catch((err) => {
-				err.errors.forEach((i) => {
-					if (i.message === 'department_name must be unique') throw new Error('Value is not unique');
-				});
-				console.log(err);
-			})
-		))
 	);
 
 	return departments;

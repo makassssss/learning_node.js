@@ -26,16 +26,38 @@ export default (sequelize, DataTypes) => {
 		});
 	};
 
-	employees.prototype.editEmployeeInfo = (id, name, email, birthday, salary) => (
-		sequelize.transaction(t => (
-			employees.update({
-				name, email, birthday, salary,
-			}, { where: { id } }, { transaction: t }).catch((err) => {
-				err.errors.forEach((i) => {
-					if (i.message === 'email must be unique') throw new Error('Email is not unique');
+	employees.prototype.setEmployee = (id, name, email, birthday, salary, department) => (
+		sequelize.transaction((t) => {
+			const promise = id ? (
+				employees.update(
+					{
+						name,
+						email,
+						birthday,
+						salary,
+					},
+					{ where: { id } },
+					{ transaction: t },
+				)
+			) : (
+				employees.create({
+					name,
+					email,
+					birthday,
+					salary,
+					department_id: department,
+				})
+			);
+			return promise.catch(function(err) {
+				err.errors.forEach(function(i) {
+					if (i.message === 'email must be unique') {
+						throw new Error('Email is not unique');
+					} else {
+						throw err;
+					}
 				});
-			})
-		))
+			});
+		})
 	);
 
 	employees.prototype.changeBirthdayFormat = (birthday) => {

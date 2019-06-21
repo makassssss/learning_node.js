@@ -6,7 +6,7 @@ import Logger from '../logger/Logger';
 const router = express.Router();
 
 router.get('/employees-list', (req, res) => {
-	const departmentId = req.query.department_id;
+	const departmentId = req.query.department;
 	models.departments.find({
 		where: {
 			department_id: departmentId,
@@ -20,7 +20,7 @@ router.get('/employees-list', (req, res) => {
 			{
 				employees,
 				departmentId,
-				department_name: department.dataValues.department_name,
+				departmentName: department.dataValues.department_name,
 				view: 'list',
 			});
 	}).then(() => {
@@ -43,7 +43,7 @@ router.post('/layOff', (req, res) => {
 });
 
 router.get('/employee', (req, res) => {
-	const { department_id: departmentId, id } = req.query;
+	const { department, id } = req.query;
 	models.employees.find({
 		where: {
 			id,
@@ -57,8 +57,7 @@ router.get('/employee', (req, res) => {
 			: {};
 		res.render('index.ejs', {
 			employee,
-			id,
-			department: departmentId,
+			department,
 			view: 'employee',
 		});
 	}).then(() => {
@@ -69,44 +68,23 @@ router.get('/employee', (req, res) => {
 	});
 });
 
-router.post('/add-employee', (req, res) => {
+router.post('/setEmployee', (req, res) => {
 	const {
-		department: departmentId,
+		id,
 		name,
 		email,
 		birthday,
 		salary,
+		department,
 	} = req.body;
-	models.employees.create({
-		name,
-		email,
-		birthday,
-		salary,
-		department_id: departmentId,
-	}).then(() => {
+	models.employees.prototype.setEmployee(id, name, email, birthday, salary, department).then(() => {
 		res.end('Success');
 	}).then(() => {
-		logToDB('add employee');
+		id
+			? logToDB('edit employee info')
+			: logToDB('add employee');
 	}).catch((err) => {
-		err.errors && err.errors[0].message === 'email must be unique' //eslint-disable-line no-unused-expressions
-			? res.end('Email is not unique')
-			: res.status(500).send(err.message);
-		Logger.error(err);
-	});
-});
-
-router.post('/edit-employee', (req, res) => {
-	const { id } = req.body;
-	const { name } = req.body;
-	const { email } = req.body;
-	const { birthday } = req.body;
-	const { salary } = req.body;
-	models.employees.prototype.editEmployeeInfo(id, name, email, birthday, salary).then(() => {
-		res.end('Success');
-	}).then(() => {
-		logToDB('edit employee info');
-	}).catch((err) => {
-		res.end(err.message);
+		res.status(400).send(err.message);
 	});
 });
 
