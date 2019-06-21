@@ -81,32 +81,20 @@ router.get('/department', function(req, res) {
 	});
 });
 
-router.post('/add-department', function(req, res) {
-	const departmentName = req.body.department_name;
-
-	departmentService.setDepartment(departmentName).then(function(result) {
-		if (result === 'Value is not unique') {
-			res.end('Value is not unique');
-		} else {
-			res.end('Success');
-			logToDB('add department');
-		}
-	}).catch(function(err) {
-		Logger.error(err);
-		console.log(err);
-	});
-});
-
-router.post('/edit-department', function(req, res) {
+router.post('/setDepartment', function(req, res) {
 	var departmentName = req.body.department_name;
 	var id = req.body.id;
 
 	departmentService.setDepartment(departmentName, id).then(function(result) {
 		if (result === 'Value is not unique') {
-			res.end('Value is not unique');
+			res.status(400).end('Value is not unique');
 		} else {
 			res.end('Success');
-			logToDB('edit department');
+			if (id) {
+				logToDB('edit department');
+			} else {
+				logToDB('add department');
+			}
 		}
 	}).catch(function(err) {
 		Logger.error(err);
@@ -150,27 +138,7 @@ router.get('/employee', function(req, res) {
 	});
 });
 
-router.post('/add-employee', function(req, res) {
-	var department = req.body.department;
-	var name = req.body.name;
-	var email = req.body.email;
-	var birthday = req.body.birthday;
-	var salary = req.body.salary;
-
-	employeeService.setEmployee(department, name, email, birthday, salary).then(function(result) {
-		if (result === 'Email is not unique') {
-			res.end('Email is not unique');
-		} else {
-			res.end('Success');
-			logToDB('add employee');
-		}
-	}).catch(function(err) {
-		Logger.error(err);
-		console.log(err);
-	});
-});
-
-router.post('/edit-employee', function(req, res) {
+router.post('/setEmployee', function(req, res) {
 	var id = req.body.employee_ID;
 	var department = req.body.department;
 	var name = req.body.name;
@@ -180,7 +148,7 @@ router.post('/edit-employee', function(req, res) {
 
 	employeeService.setEmployee(department, name, email, birthday, salary, id).then(function(result) {
 		if (result === 'Email is not unique') {
-			res.end('Email is not unique');
+			res.status(400).end('Email is not unique');
 		} else {
 			res.end('Success');
 			logToDB('edit employee info');

@@ -1,14 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
-    <title>Document</title>
-</head>
-<body>
+<a href="/" class="btn btn-secondary position-absolute ml-3"><</a>
 <h3 class="my-4" style="text-align: center">Employees of <%= department %></h3>
 <table class="table table-bordered">
     <thead>
@@ -34,7 +24,7 @@
             <a href="/employee?department=<%= department %>&id=<%= employees[i].employee_ID %>" class="btn btn-secondary btn-block">Edit</a>
         </td>
         <td>
-            <button onclick="layOff(<%= employees[i].employee_ID%>)" type="button" class="btn btn-secondary btn-block">delete</button>
+            <button id="<%= employees[i].employee_ID%>" type="button" class="btn btn-secondary btn-block">delete</button>
         </td>
     </tr>
     <% } %>
@@ -46,21 +36,28 @@
     </tbody>
 </table>
 
-
 <script>
-
-    function layOff(id) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '/layOff', true);
-        xhr.setRequestHeader("Content-type", "application/json");
-        xhr.send(JSON.stringify({id: id}));
-        window.location.reload(true);
-    }
-
+	$(document).ready(function() {
+		$('button[type=button]').click(function(e) {
+			var deleteEmployee = confirm('Are you sure?');
+			var data = {
+				id: e.target.id,
+			};
+			if (deleteEmployee) {
+				$.ajax({
+					url: '/layOff',
+					type: 'post',
+					data: data,
+					success: function() {
+						window.location.reload(true);
+					},
+					error: function(err) {
+						console.log(err);
+					},
+				});
+			} else {
+				return false;
+			}
+		})
+	})
 </script>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
-</body>
-</html>
