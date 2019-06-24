@@ -44,15 +44,16 @@ export default (sequelize, DataTypes) => {
 					department_id: departmentId,
 				})
 			);
-			return promise.catch(err => (
+			return promise.catch((err) => {
 				err.errors.forEach((i) => {
 					if (i.message === 'email must be unique') {
 						throw new Error('Email is not unique');
 					} else {
 						throw err;
 					}
-				})
-			));
+				});
+				console.log(err);
+			});
 		})
 	);
 

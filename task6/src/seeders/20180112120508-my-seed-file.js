@@ -1,21 +1,19 @@
 /*eslint-disable strict, object-shorthand*/
 
-'use strict';
-
 module.exports = {
-	up: function(queryInterface, Sequelize) {
-		return queryInterface.createTable('departments', {
+	up: (queryInterface, Sequelize) => (
+		queryInterface.createTable('departments', {
 			department_name: {
 				type: Sequelize.STRING,
 				unique: true,
 			},
-		}).then(function() {
-			return queryInterface.bulkInsert('departments', [
+		}).then(() => (
+			queryInterface.bulkInsert('departments', [
 				{ department_name: 'd1' },
 				{ department_name: 'd2' },
-			]);
-		}).then(function() {
-			return queryInterface.createTable('employees', {
+			])
+		)).then(() => (
+			queryInterface.createTable('employees', {
 				name: Sequelize.STRING,
 				email: {
 					type: Sequelize.STRING,
@@ -23,9 +21,9 @@ module.exports = {
 				},
 				birthday: Sequelize.DATE,
 				salary: Sequelize.INTEGER,
-			});
-		}).then(function() {
-			return queryInterface.bulkInsert('employees', [
+			})
+		)).then(() => (
+			queryInterface.bulkInsert('employees', [
 				{
 					name: 'Bill',
 					email: 'bill@gmail.com',
@@ -54,11 +52,9 @@ module.exports = {
 					salary: 200,
 					department_id: 2,
 				},
-			]);
-		});
-	},
+			])
+		))
+	),
 
-	down: function(queryInterface) {
-		return queryInterface.dropAllTables();
-	},
+	down: queryInterface => queryInterface.dropAllTables(),
 };
