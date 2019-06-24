@@ -1,5 +1,5 @@
 <a href="/" class="btn btn-secondary position-absolute ml-3"><</a>
-<h3 class="my-4" style="text-align: center">Employees of <%= department_name %></h3>
+<h3 class="my-4" style="text-align: center">Employees of <%= departmentName %></h3>
 <table class="table table-bordered">
     <thead>
     <tr>
@@ -18,39 +18,46 @@
             <td><%= employees[i].id %></td>
             <td><%= employees[i].name %></td>
             <td><%= employees[i].email %></td>
-            <td>
-                <% if (employees[i].birthday) { %><%= employees[i].birthday.toDateString().split(' ').splice(1).join(' ') %>
-                <% } %>
-            </td>
+            <td><% if (employees[i].birthday) { %><%= employees[i].birthday.toDateString().split(' ').splice(1).join(' ') %><% } %></td>
             <td><%= employees[i].salary %></td>
             <td>
-                <a href="/employee?department_id=<%= departmentId %>&id=<%= employees[i].id %>"
-                   class="btn btn-secondary btn-block">Edit</a>
+                <a href="/employee?department=<%= departmentId %>&id=<%= employees[i].id %>" class="btn btn-secondary btn-block">Edit</a>
             </td>
             <td>
-                <button onclick="layOff(<%= employees[i].id %>)" type="button" class="btn btn-secondary btn-block">
-                    delete
-                </button>
+                <button id="<%= employees[i].id%>" type="button" class="btn btn-secondary btn-block">delete</button>
             </td>
         </tr>
     <% } %>
     <tr>
         <td colspan="2">
-            <a href="/employee?department_id=<%= departmentId %>" class="btn btn-secondary btn-block">Add</a>
+            <a href="/employee?department=<%= departmentId %>" class="btn btn-secondary btn-block">Add</a>
         </td>
     </tr>
     </tbody>
 </table>
 
-
 <script>
-
-	function layOff(id) {
-		const xhr = new XMLHttpRequest();
-		xhr.open('POST', '/layOff', true);
-		xhr.setRequestHeader("Content-type", "application/json");
-		xhr.send(JSON.stringify({ id: id }));
-		window.location.reload(true);
-	}
-
+	$(document).ready(function() {
+		$('button[type=button]').click(function(e) {
+			var deleteEmployee = confirm('Are you sure?');
+			var data = {
+				id: e.target.id,
+			};
+			if (deleteEmployee) {
+				$.ajax({
+					url: '/layOff',
+					type: 'post',
+					data: data,
+					success: function() {
+						window.location.reload(true);
+					},
+					error: function(err) {
+						console.log(err);
+					},
+				});
+			} else {
+				return false;
+			}
+		})
+	})
 </script>

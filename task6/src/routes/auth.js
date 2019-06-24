@@ -1,5 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import models from '../models/index';
 import config from '../config';
 import Logger from '../logger/Logger';
@@ -24,16 +25,18 @@ router.get('/logout', (req, res) => {
 	res.redirect('/');
 });
 
-router.post('/checkUser', (req, res) => {
+router.post('/login', (req, res) => {
 	const { username, password } = req.body;
 	models.users.find({
 		where: {
 			username,
-			password,
 		},
 	}).then((usr) => {
-		const user = { username, password };
-		if (usr) {
+		const user = {
+			username,
+			password: usr.password,
+		};
+		if (bcrypt.compareSync(password, user.password)) {
 			jwt.sign(user, config.secret, { expiresIn: config.tokenLife }, (err, token) => {
 				if (err) {
 					console.log(err);
@@ -42,7 +45,7 @@ router.post('/checkUser', (req, res) => {
 				res.send();
 			});
 		} else {
-			res.send('unknown user');
+			res.status(400).send('unknown user');
 		}
 	}).catch((err) => {
 		Logger.error(err);
@@ -50,11 +53,11 @@ router.post('/checkUser', (req, res) => {
 	});
 });
 
-router.post('/addUser', (req, res) => {
+router.post('/signup', (req, res) => {
 	const { username, password } = req.body;
 	models.users.create({
 		username,
-		password,
+		password: bcrypt.hashSync(password, 10),
 	}).then(() => {
 		res.end('Success');
 	}).then(() => {
@@ -62,7 +65,7 @@ router.post('/addUser', (req, res) => {
 	}).catch((err) => {
 		Logger.error(err);
 		err.errors && err.errors[0].message === 'username must be unique' //eslint-disable-line no-unused-expressions
-			? res.end('Validation error')
+			? res.status(400).send('value must be unique')
 			: res.status(500).send(err.message);
 	});
 });

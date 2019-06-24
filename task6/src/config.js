@@ -1,4 +1,4 @@
 export default {
 	secret: 'qwerty',
-	tokenLife: 60,
+	tokenLife: '1h',
 };

@@ -48,28 +48,16 @@ router.get('/department', (req, res) => {
 	});
 });
 
-router.post('/add-department', (req, res) => {
-	const departmentName = req.body.department_name;
-	models.departments.prototype.addDepartment(departmentName).then(() => {
+router.post('/setDepartment', (req, res) => {
+	const { department_name: departmentName, id } = req.body;
+	models.departments.prototype.setDepartment(departmentName, id).then(() => {
 		res.end();
 	}).then(() => {
-		logToDB('add department');
+		id
+			? logToDB('edit employee info')
+			: logToDB('add employee');
 	}).catch((err) => {
-		Logger.error(err);
-		res.status(500).send(err.message);
-	});
-});
-
-router.post('/edit-department', (req, res) => {
-	const departmentName = req.body.department_name;
-	const { id } = req.body;
-	models.departments.prototype.editDepartment(departmentName, id).then(() => {
-		res.end();
-	}).then(() => {
-		logToDB('edit department');
-	}).catch((err) => {
-		Logger.error(err);
-		res.send(500, err.message);
+		res.status(400).send(err.message);
 	});
 });
 
