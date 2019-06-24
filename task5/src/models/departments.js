@@ -42,8 +42,8 @@ export default (sequelize, DataTypes) => {
 					replacements: [name],
 				}, { transaction: t })
 			);
-			return promise.catch(function(err) {
-				err.errors.forEach(function(i) {
+			return promise.catch((err) => {
+				err.errors.forEach((i) => {
 					if (i.message === 'department_name must be unique') {
 						throw new Error('Value is not unique');
 					}
