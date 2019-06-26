@@ -58,27 +58,28 @@ const Login = ({ ...props }) => {
 							id="password"
 							name="password"
 							required
-							onChange={(e) => setPassword(e.target.value)}
+							onChange={e => setPassword(e.target.value)}
 						/>
 					</div>
 					<div>
 						<input
 							type="submit"
 							className="btn btn-secondary"
-							value='Login'
+							value="Login"
 						/>
-						<Link to='/signup'>
+						<Link to="/signup">
 							<span className="link ml-4">Sign up</span>
 						</Link>
 						{
-							showValidationError &&
-							<span className="validation unknown-user pl-4">Invalid username or password!</span>
+							showValidationError && (
+								<span className="validation unknown-user pl-4">Invalid username or password!</span>
+							)
 						}
 					</div>
 				</form>
 			</main>
 		</div>
-	)
+	);
 };
 
 export default connect(null, mapDispatchToProps)(Login);

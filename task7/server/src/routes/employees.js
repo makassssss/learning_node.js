@@ -31,47 +31,26 @@ router.post('/delete-employee', (req, res) => {
 	});
 });
 
-// Add new employee
+// Set employee
 
-router.post('/add-employee', (req, res) => {
+router.post('/set-employee', (req, res) => {
 	const {
 		departmentId,
-		name,
-		email,
-		birthday,
-		salary,
-	} = req.body;
-	models.employees.create({
-		name,
-		email,
-		birthday,
-		salary,
-		department_id: departmentId,
-	}).then((newEmployee) => {
-		const { id } = newEmployee.dataValues;
-		res.send({ success: true, id });
-	}).then(() => {
-		logToDB('add employee');
-	}).catch((err) => {
-		res.send({ success: false, err: err.message });
-		Logger.error(err);
-	});
-});
-
-// Edit employee info
-
-router.post('/edit-employee', (req, res) => {
-	const {
 		id,
 		name,
 		email,
 		birthday,
 		salary,
 	} = req.body;
-	models.employees.prototype.editEmployeeInfo(id, name, email, birthday, salary).then(() => {
-		res.send({ success: true });
+	models.employees.prototype.setEmployee(id, name, email, birthday, salary, departmentId).then((employees) => {
+		const employeeId = !id
+			? employees.dataValues.id
+			: id;
+		res.send({ success: true, id: employeeId });
 	}).then(() => {
-		logToDB('edit employee info');
+		id
+			? logToDB('edit employee info')
+			: logToDB('add employee');
 	}).catch((err) => {
 		res.send({ success: false, err: err.message });
 		Logger.error(err);

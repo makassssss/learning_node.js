@@ -15,18 +15,12 @@ import {
 	DELETE_DEPARTMENT_DONE,
 	DELETE_EMPLOYEE,
 	DELETE_EMPLOYEE_DONE,
-	ADD_DEPARTMENT,
-	ADD_DEPARTMENT_DONE,
-	ADD_DEPARTMENT_FAIL,
-	EDIT_DEPARTMENT,
-	EDIT_DEPARTMENT_DONE,
-	EDIT_DEPARTMENT_FAIL,
-	ADD_EMPLOYEE,
-	ADD_EMPLOYEE_DONE,
-	ADD_EMPLOYEE_FAIL,
-	EDIT_EMPLOYEE,
-	EDIT_EMPLOYEE_DONE,
-	EDIT_EMPLOYEE_FAIL,
+	SET_DEPARTMENT,
+	SET_DEPARTMENT_DONE,
+	SET_DEPARTMENT_FAIL,
+	SET_EMPLOYEE,
+	SET_EMPLOYEE_DONE,
+	SET_EMPLOYEE_FAIL,
 	CLEAR_STATUS,
 } from '../actions/actionCreators';
 
@@ -43,37 +37,25 @@ function* getData() {
 	yield put({ type: PUT_DATA_TO_STORE, departments, employees });
 }
 
-function* addDepartment(action) {
+function* setDepartment(action) {
 	const config = configWithAuthHeader();
-	const { name } = action;
+	const { id, name, history } = action;
 	const ApiCall = () => (
-		axios.post('http://localhost:5000/api/add-department', { name }, config).then(res => res.data)
-	);
-	const response = yield call(ApiCall);
-	const { id, success, err } = response;
-	success
-		? yield put({ type: ADD_DEPARTMENT_DONE, id, name })
-		: yield put({ type: ADD_DEPARTMENT_FAIL, err });
-	yield delay(3000);
-	yield put({ type: CLEAR_STATUS });
-}
-
-function* editDepartment(action) {
-	const config = configWithAuthHeader();
-	const { id, name } = action;
-	const ApiCall = () => (
-		axios.post('http://localhost:5000/api/edit-department', {
+		axios.post('http://localhost:5000/api/set-department', {
 			id,
 			name,
 		}, config).then(res => res.data)
 	);
 	const response = yield call(ApiCall);
 	const { success, err } = response;
-	success
-		? yield put({ type: EDIT_DEPARTMENT_DONE, id, name })
-		: yield put({ type: EDIT_DEPARTMENT_FAIL, err });
-	yield delay(2000);
-	yield put({ type: CLEAR_STATUS });
+	if (success) {
+		yield put({ type: SET_DEPARTMENT_DONE, id: response.id, name });
+		history.push('/');
+	} else {
+		yield put({ type: SET_DEPARTMENT_FAIL, err });
+		yield delay(2000);
+		yield put({ type: CLEAR_STATUS });
+	}
 }
 
 function* deleteDepartment(action) {
@@ -86,42 +68,7 @@ function* deleteDepartment(action) {
 	yield put({ type: DELETE_DEPARTMENT_DONE, id });
 }
 
-function* addEmployee(action) {
-	const config = configWithAuthHeader();
-	const {
-		departmentId,
-		name,
-		email,
-		birthday,
-		salary,
-	} = action;
-	const ApiCall = () => (
-		axios.post('http://localhost:5000/api/add-employee', {
-			departmentId,
-			name,
-			email,
-			birthday,
-			salary,
-		}, config).then(res => res.data)
-	);
-	const response = yield call(ApiCall);
-	const { success, id, err } = response;
-	success
-		? yield put({
-			type: ADD_EMPLOYEE_DONE,
-			departmentId,
-			id,
-			name,
-			email,
-			birthday,
-			salary,
-		})
-		: yield put({ type: ADD_EMPLOYEE_FAIL, err });
-	yield delay(2000);
-	yield put({ type: CLEAR_STATUS });
-}
-
-function* editEmployee(action) {
+function* setEmployee(action) {
 	const config = configWithAuthHeader();
 	const {
 		departmentId,
@@ -130,9 +77,10 @@ function* editEmployee(action) {
 		email,
 		birthday,
 		salary,
+		history,
 	} = action;
 	const ApiCall = () => (
-		axios.post('http://localhost:5000/api/edit-employee', {
+		axios.post('http://localhost:5000/api/set-employee', {
 			departmentId,
 			id,
 			name,
@@ -143,19 +91,22 @@ function* editEmployee(action) {
 	);
 	const response = yield call(ApiCall);
 	const { success, err } = response;
-	success
-		? yield put({
-			type: EDIT_EMPLOYEE_DONE,
+	if (success) {
+		yield put({
+			type: SET_EMPLOYEE_DONE,
 			departmentId,
-			id,
+			id: response.id,
 			name,
 			email,
 			birthday,
 			salary,
-		})
-		: yield put({ type: EDIT_EMPLOYEE_FAIL, err });
-	yield delay(2000);
-	yield put({ type: CLEAR_STATUS });
+		});
+		history.push(`/employees-list?department=${departmentId}`);
+	} else {
+		yield put({ type: SET_EMPLOYEE_FAIL, err });
+		yield delay(2000);
+		yield put({ type: CLEAR_STATUS });
+	}
 }
 
 function* deleteEmployee(action) {
@@ -171,11 +122,9 @@ function* deleteEmployee(action) {
 export default function* rootSaga() {
 	yield all([
 		takeLatest(FETCH_INITIAL_DATA, getData),
-		takeLatest(ADD_DEPARTMENT, addDepartment),
-		takeLatest(EDIT_DEPARTMENT, editDepartment),
+		takeLatest(SET_DEPARTMENT, setDepartment),
 		takeLatest(DELETE_DEPARTMENT, deleteDepartment),
-		takeLatest(ADD_EMPLOYEE, addEmployee),
-		takeLatest(EDIT_EMPLOYEE, editEmployee),
+		takeLatest(SET_EMPLOYEE, setEmployee),
 		takeLatest(DELETE_EMPLOYEE, deleteEmployee),
 	]);
 }

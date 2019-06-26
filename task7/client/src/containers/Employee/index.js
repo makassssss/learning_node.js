@@ -1,19 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as url from 'query-string';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actionCreators from '../../redux/actions/actionCreators';
 import moment from 'moment';
+import * as actionCreators from '../../redux/actions/actionCreators';
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
 	employees: state.employees,
-	addSuccess: state.addSuccess.employee,
-	editSuccess: state.editSuccess.employee,
 	fail: state.fail.employee,
 });
 
-const mapDispatchToProps = (dispatch) => bindActionCreators(actionCreators, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
 class Employee extends React.Component {
 
@@ -28,15 +27,15 @@ class Employee extends React.Component {
 			salary: '',
 			error: {
 				invalidDate: false,
-			}
-		}
+			},
+		};
 	}
 
 	componentDidMount() {
 		const { employees } = this.props;
 		const { id } = this.state;
 		if (id) {
-			employees.forEach(employee => {
+			employees.forEach((employee) => {
 				if (employee.id === id) {
 					this.setState({
 						name: employee.name,
@@ -45,7 +44,7 @@ class Employee extends React.Component {
 						salary: employee.salary,
 					});
 				}
-			})
+			});
 		}
 	}
 
@@ -61,7 +60,7 @@ class Employee extends React.Component {
 		this.setState({
 			error: {
 				invalidDate: !re.test(date),
-			}
+			},
 		});
 		return re.test(date);
 	};
@@ -73,18 +72,31 @@ class Employee extends React.Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault();
-		const { id, department, name, email, birthday, salary } = this.state;
+		const {
+			id,
+			department,
+			name,
+			email,
+			birthday,
+			salary,
+		} = this.state;
 		const isValid = this.validateForm();
 		isValid
-			? id
-				? this.props.editEmployee(department, id, name, email, birthday, salary)
-				: this.props.addEmployee(department, name, email, birthday, salary)
-			: null
+			? this.props.setEmployee(department, id, name, email, birthday, salary, this.props.history)
+			: null;
 	};
 
 	render() {
-		const { addSuccess, editSuccess, fail } = this.props;
-		const { id, department, name, email, birthday, salary, error } = this.state;
+		const { fail } = this.props;
+		const {
+			id,
+			department,
+			name,
+			email,
+			birthday,
+			salary,
+			error,
+		} = this.state;
 
 		return (
 			<div className="employee">
@@ -112,6 +124,7 @@ class Employee extends React.Component {
 							defaultValue={department.toString()}
 						/>
 						<div className="form-group">
+							{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 							<label htmlFor="name">name *</label>
 							<input
 								required
@@ -124,10 +137,12 @@ class Employee extends React.Component {
 							/>
 						</div>
 						<div className="form-group">
+							{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 							<label htmlFor="email">email *</label>
 							{
-								fail &&
+								fail && (
 									<span className="validation not-unique pl-4">Value must be unique</span>
+								)
 							}
 							<input
 								required
@@ -140,10 +155,12 @@ class Employee extends React.Component {
 							/>
 						</div>
 						<div className="form-group">
+							{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 							<label htmlFor="birthday">birthday *</label>
 							{
-								error.invalidDate &&
+								error.invalidDate && (
 									<span className="validation invalid pl-4">date format yyyy-mm-dd</span>
+								)
 							}
 							<input
 								required
@@ -156,6 +173,7 @@ class Employee extends React.Component {
 							/>
 						</div>
 						<div className="form-group">
+							{/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
 							<label htmlFor="salary">salary *</label>
 							<input
 								required
@@ -165,31 +183,31 @@ class Employee extends React.Component {
 								name="salary"
 								value={salary}
 								onChange={e => this.handleInputChange('salary', e)}
-								/>
+							/>
 						</div>
 						<div>
 							<input
 								type="submit"
 								className="btn btn-secondary float-right"
-								value={id ? 'Edit' : 'Add'}
+								value="Save"
 							/>
 							<Link to={`/employees-list?department=${department}`}>
+								{/* eslint-disable-next-line quotes */}
 								<span className="btn btn-secondary">{`<`}</span>
 							</Link>
-							{
-								addSuccess &&
-									<span className="validation success pl-4">New employee was added</span>
-							}
-							{
-								editSuccess &&
-									<span className="validation success pl-4">Employee's info was edited</span>
-							}
 						</div>
 					</form>
 				</main>
 			</div>
-		)
+		);
 	}
 }
+
+Employee.propTypes = {
+	employees: PropTypes.array,
+	setEmployee: PropTypes.func,
+	fail: PropTypes.bool,
+	history: PropTypes.object,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Employee);

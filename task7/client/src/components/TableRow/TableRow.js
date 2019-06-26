@@ -1,23 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
+import Portal from '../Portal';
+import DeleteItemModal from '../DeleteItemModal';
 
-export class DepartmentTableRow extends React.Component {
-
-	constructor() {
-		super();
-		this.deleteDepartment = this.deleteDepartment.bind(this);
-	}
-
-	deleteDepartment(e) {
-		const id = +e.target.getAttribute('itemref');
-		this.props.deleteDepartment(id);
-	}
-
-	render() {
-		const { department_id: id, department_name: name } = this.props.department;
-		return (
+export const DepartmentTableRow = ({ department, deleteDepartment }) => {
+	const { department_id: id, department_name: name } = department;
+	const [modalOpen, setModalOpen] = useState(false);
+	return (
+		<>
 			<tr>
 				<td>{id}</td>
 				<td>{name}</td>
@@ -32,8 +24,7 @@ export class DepartmentTableRow extends React.Component {
 					<button
 						type="button"
 						className="btn btn-secondary btn-block"
-						itemRef={id}
-						onClick={this.deleteDepartment}
+						onClick={() => setModalOpen(true)}
 					>
 						delete
 					</button>
@@ -41,43 +32,42 @@ export class DepartmentTableRow extends React.Component {
 				<td>
 					<Link to={`/employees-list?department=${id}`}>
 						<span className="btn btn-secondary btn-block">
-                            list
+							list
 						</span>
 					</Link>
 				</td>
 			</tr>
-		);
-	}
-}
+			<Portal open={modalOpen}>
+				<DeleteItemModal
+					item="department"
+					id={id}
+					handleClose={() => setModalOpen(false)}
+					handleDelete={() => deleteDepartment(id)}
+				/>
+			</Portal>
+		</>
+	);
+};
 
 DepartmentTableRow.propTypes = {
 	deleteDepartment: PropTypes.func,
 	department: PropTypes.object,
 };
 
-export class EmployeeTableRow extends React.Component { //eslint-disable-line react/no-multi-comp
-	constructor() {
-		super();
-		this.deleteEmployee = this.deleteEmployee.bind(this);
-	}
+export const EmployeeTableRow = ({ employee, deleteEmployee }) => {
+	const {
+		id,
+		name,
+		email,
+		birthday,
+		salary,
+		department_id: departmentId,
+	} = employee;
+	const employeeBirthday = moment(birthday).format('YYYY-MM-DD');
+	const [modalOpen, setModalOpen] = useState(false);
 
-	deleteEmployee(e) {
-		const id = +e.target.getAttribute('itemref');
-		this.props.deleteEmployee(id);
-	}
-
-	render() {
-		const {
-			id,
-			name,
-			email,
-			birthday,
-			salary,
-			department_id: departmentId,
-		} = this.props.employee;
-		const employeeBirthday = moment(birthday).format('YYYY-MM-DD');
-
-		return (
+	return (
+		<>
 			<tr>
 				<td>{id}</td>
 				<td>{name}</td>
@@ -87,7 +77,7 @@ export class EmployeeTableRow extends React.Component { //eslint-disable-line re
 				<td>
 					<Link to={`/employee?department=${departmentId}&id=${id}`}>
 						<span className="btn btn-secondary btn-block">
-                            edit
+							edit
 						</span>
 					</Link>
 				</td>
@@ -95,16 +85,21 @@ export class EmployeeTableRow extends React.Component { //eslint-disable-line re
 					<button
 						type="button"
 						className="btn btn-secondary btn-block"
-						itemRef={id}
-						onClick={this.deleteEmployee}
+						onClick={() => setModalOpen(true)}
 					>
 						delete
 					</button>
 				</td>
 			</tr>
-		);
-	}
-}
+			<Portal open={modalOpen}>
+				<DeleteItemModal
+					handleClose={() => setModalOpen(false)}
+					handleDelete={() => deleteEmployee(id)}
+				/>
+			</Portal>
+		</>
+	);
+};
 
 EmployeeTableRow.propTypes = {
 	deleteEmployee: PropTypes.func,

@@ -11,10 +11,8 @@ export default function employees(state = [], action) {
 		case 'PUT_DATA_TO_STORE':
 			return [...action.employees];
 		case 'DELETE_EMPLOYEE_DONE':
-			return [...state.filter(employee => employee.id !== action.id)];
-		case 'ADD_EMPLOYEE_DONE':
-			return [...state, employee];
-		case 'EDIT_EMPLOYEE_DONE':
+			return [...state.filter(i => i.id !== action.id)];
+		case 'SET_EMPLOYEE_DONE':
 			return [...state.filter(i => i.id !== action.id), employee];
 		default:
 			return state;

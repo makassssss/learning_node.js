@@ -32,29 +32,19 @@ router.post('/delete-department', (req, res) => {
 	});
 });
 
-// Add new department
+// Add or edit department
 
-router.post('/add-department', (req, res) => {
-	const { name } = req.body;
-	models.departments.prototype.addDepartment(name).then((newDepartment) => {
-		const id = newDepartment[0];
-		res.send({ success: true, id });
-	}).then(() => {
-		logToDB('add department');
-	}).catch((err) => {
-		Logger.error(err);
-		res.send({ success: false, err: err.message });
-	});
-});
-
-// Edit department info
-
-router.post('/edit-department', (req, res) => {
+router.post('/set-department', (req, res) => {
 	const { id, name } = req.body;
-	models.departments.prototype.editDepartment(name, id).then(() => {
-		res.send({ success: true });
+	models.departments.prototype.setDepartment(name, id).then((department) => {
+		const departmentId = !id
+			? department[0]
+			: id;
+		res.send({ success: true, id: departmentId });
 	}).then(() => {
-		logToDB('edit department');
+		id
+			? logToDB('edit department')
+			: logToDB('add department');
 	}).catch((err) => {
 		Logger.error(err);
 		res.send({ success: false, err: err.message });

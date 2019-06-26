@@ -1,5 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import models from '../models/index';
 import config from '../config';
 import Logger from '../logger/Logger';
@@ -14,11 +15,13 @@ router.post('/login', (req, res) => {
 	models.users.find({
 		where: {
 			username,
-			password,
 		},
 	}).then((usr) => {
-		if (usr) {
-			const user = { username, password };
+		const user = {
+			username,
+			password: usr.password,
+		};
+		if (bcrypt.compareSync(password, user.password)) {
 			jwt.sign(user, config.secret, { expiresIn: config.tokenLife }, (err, token) => {
 				if (err) {
 					res.status(500).send(err);
@@ -40,7 +43,7 @@ router.post('/signup', (req, res) => {
 	const { username, password } = req.body;
 	models.users.create({
 		username,
-		password,
+		password: bcrypt.hashSync(password, 10),
 	}).then(() => {
 		res.end('Success');
 	}).then(() => {

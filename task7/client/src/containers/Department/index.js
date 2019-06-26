@@ -8,8 +8,6 @@ import * as actionCreators from '../../redux/actions/actionCreators';
 
 const mapStateToProps = state => ({
 	departments: state.departments,
-	addSuccess: state.addSuccess.department,
-	editSuccess: state.editSuccess.department,
 	fail: state.fail.department,
 });
 
@@ -49,15 +47,13 @@ class Department extends React.Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		const { departmentId, departmentName } = this.state;
-		departmentId
-			? this.props.editDepartment(departmentId, departmentName)
-			: this.props.addDepartment(departmentName);
+		this.props.setDepartment(departmentId, departmentName, this.props.history);
 	};
 
 
 	render() {
 		const { departmentId, departmentName } = this.state;
-		const { addSuccess, editSuccess, fail } = this.props;
+		const { fail } = this.props;
 		return (
 			<div className="department">
 				<header>
@@ -79,6 +75,7 @@ class Department extends React.Component {
 							defaultValue={departmentId.toString()}
 						/>
 						<div className="form-group">
+							{/*eslint-disable-next-line jsx-a11y/label-has-associated-control*/}
 							<label htmlFor="name">department name *</label>
 							{
 								fail && (
@@ -99,21 +96,12 @@ class Department extends React.Component {
 							<input
 								type="submit"
 								className="btn btn-secondary float-right"
-								value={departmentId ? 'Edit' : 'Add'}
+								value="Save"
 							/>
 							<Link to="/departments">
+								{/*eslint-disable-next-line quotes*/}
 								<span className="btn btn-secondary">{`<`}</span>
 							</Link>
-							{
-								addSuccess && (
-									<span className="validation success pl-4">New department was added</span>
-								)
-							}
-							{
-								editSuccess && (
-									<span className="validation success pl-4">The department was edited</span>
-								)
-							}
 						</div>
 					</form>
 				</main>
@@ -124,11 +112,9 @@ class Department extends React.Component {
 
 Department.propTypes = {
 	departments: PropTypes.array,
-	addDepartment: PropTypes.func,
-	editDepartment: PropTypes.func,
-	addSuccess: PropTypes.bool,
-	editSuccess: PropTypes.bool,
+	setDepartment: PropTypes.func,
 	fail: PropTypes.bool,
+	history: PropTypes.object,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Department);
