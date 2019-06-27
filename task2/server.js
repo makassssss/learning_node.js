@@ -12,6 +12,15 @@ var path = require('path');
 var DepartmentService = require('./src/services/DepartmentService');
 var EmployeeService = require('./src/services/EmployeeService');
 
+var read = function(fileName) {
+	return fs.readFileSync(path.join(__dirname, 'src/view', fileName), 'utf-8');
+};
+
+var DEPARTMENTS_TEMPLATE = read('departments.ejs'),
+	DEPARTMENT_TEMPLATE = read('department.ejs'),
+	EMPLOYEES_LIST_TEMPLATE = read('list.ejs'),
+	EMPLOYEE_TEMPLATE = read('employee.ejs');
+
 var pool = mysql.createPool({
 	connectionLimit: 10,
 	host: '127.0.0.1',
@@ -27,16 +36,11 @@ http.createServer(function(req, res) {
 	var departmentService = new DepartmentService();
 	var employeeService = new EmployeeService();
 
-	var read = function(fileName) {
-		return fs.readFileSync(path.join(__dirname, 'src/view', fileName), 'utf-8');
-	};
-
 	switch (urlPath.pathname) {
 		case '/':
 			departmentService.getDepartmentList().then(function(departments) {
-				var template = read('departments.ejs');
 				res.writeHeader(200, { 'Content-Type': 'text/html' });
-				res.end(ejs.render(template, { departments: departments }));
+				res.end(ejs.render(DEPARTMENTS_TEMPLATE, { departments: departments }));
 			}).catch(function(err) {
 				throw err;
 			});
@@ -46,8 +50,7 @@ http.createServer(function(req, res) {
 			var id = querystring.parse(urlPath.query).id;
 			departmentService.getDepartment(id).then(function(name) {
 				res.writeHeader(200, { 'Content-Type': 'text/html' });
-				var template = read('department.ejs');
-				res.end(ejs.render(template, { id: id, name: name }));
+				res.end(ejs.render(DEPARTMENT_TEMPLATE, { id: id, name: name }));
 			}).catch(function(err) {
 				throw err;
 			});
@@ -58,8 +61,7 @@ http.createServer(function(req, res) {
 				var id = JSON.parse(body).id;
 				departmentService.dropDepartment(id).then(function(departments) {
 					res.writeHeader(200, { 'Content-Type': 'text/html' });
-					var template = read('departments.ejs');
-					res.end(ejs.render(template, { departments: departments }));
+					res.end(ejs.render(DEPARTMENTS_TEMPLATE, { departments: departments }));
 				}).catch(function(err) {
 					throw err;
 				});
@@ -92,8 +94,7 @@ http.createServer(function(req, res) {
 					pool.query(sql, function(error, employees) {
 						if (error) throw error;
 						res.writeHeader(200, { 'Content-Type': 'text/html' });
-						var template = read('list.ejs');
-						res.end(ejs.render(template, { employees: employees, department: department }));
+						res.end(ejs.render(EMPLOYEES_LIST_TEMPLATE, { employees: employees, department: department }));
 					});
 				});
 			} else {
@@ -108,8 +109,7 @@ http.createServer(function(req, res) {
 				var id = JSON.parse(body).id;
 				employeeService.layOffEmployee(id).then(function(employees) {
 					res.writeHeader(200, { 'Content-Type': 'text/html' });
-					var template = read('list.ejs');
-					res.end(ejs.render(template, { employees: employees, department: department }));
+					res.end(ejs.render(EMPLOYEES_LIST_TEMPLATE, { employees: employees, department: department }));
 				}).catch(function(err) {
 					throw err;
 				});
@@ -121,8 +121,11 @@ http.createServer(function(req, res) {
 			var employeeId = querystring.parse(urlPath.query).id;
 			employeeService.getEmployee(employeeId).then(function(employee) {
 				res.writeHeader(200, { 'Content-Type': 'text/html' });
-				var template = read('employee.ejs');
-				res.end(ejs.render(template, { id: employeeId, employee: employee, department: departmentName }));
+				res.end(ejs.render(EMPLOYEE_TEMPLATE, {
+					id: employeeId,
+					employee: employee,
+					department: departmentName,
+				}));
 			}).catch(function(err) {
 				throw err;
 			});
