@@ -3,8 +3,8 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import db from './models/index';
-import auth from './routes/auth';
-import departments from './routes/departments';
+import auth from './routes/auth'; //eslint-disable-line import/no-cycle
+import departments from './routes/departments'; //eslint-disable-line import/no-cycle
 import employees from './routes/employees';
 import isAuthorized from './middlewares/auth';
 

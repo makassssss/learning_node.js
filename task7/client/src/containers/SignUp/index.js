@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const SignUp = ({ ...props }) => {
+const SignUp = () => {
 
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -16,18 +16,16 @@ const SignUp = ({ ...props }) => {
 		axios.post('http://localhost:5000/signup', {
 			username,
 			password,
-		})
-		.then(res => {
+		}).then((res) => {
 			if (res.data === 'username must be unique') {
-				throw res.data
+				throw res.data;
 			} else {
 				setShowValidationSuccess(true);
 			}
-		})
-		.catch(err => {
+		}).catch((err) => {
 			err === 'username must be unique'
 				? setShowValidationError(true)
-				: console.log(err)
+				: console.log(err);
 		});
 	};
 
@@ -39,18 +37,24 @@ const SignUp = ({ ...props }) => {
 			<main>
 				<form className="mx-auto w-25" id="form" onSubmit={handleSubmit}>
 					<div className="form-group">
+						{/* eslint-disable-next-line */}
 						<label htmlFor="username">username</label>
-						{showValidationError && <span className="validation not-unique pl-4">Value must be unique</span>}
+						{
+							showValidationError && (
+								<span className="validation not-unique pl-4">Value must be unique</span>
+							)
+						}
 						<input
 							type="text"
 							className="form-control"
 							id="username"
 							name="username"
 							required
-							onChange={(e) => setUsername(e.target.value)}
+							onChange={e => setUsername(e.target.value)}
 						/>
 					</div>
 					<div className="form-group">
+						{/* eslint-disable-next-line */}
 						<label htmlFor="username">password</label>
 						<input
 							type="password"
@@ -58,24 +62,28 @@ const SignUp = ({ ...props }) => {
 							id="password"
 							name="password"
 							required
-							onChange={(e) => setPassword(e.target.value)}
+							onChange={e => setPassword(e.target.value)}
 						/>
 					</div>
 					<div>
 						<input
 							type="submit"
 							className="btn btn-secondary"
-							value='Sign up'
+							value="Sign up"
 						/>
-						<Link to='/login'>
+						<Link to="/login">
 							<span className="link ml-4">Log in</span>
 						</Link>
-						{showValidationSuccess && <span className="validation success pl-4">New user has been created</span>}
+						{
+							showValidationSuccess && (
+								<span className="validation success pl-4">New user has been created</span>
+							)
+						}
 					</div>
 				</form>
 			</main>
 		</div>
-	)
+	);
 };
 
 export default SignUp;

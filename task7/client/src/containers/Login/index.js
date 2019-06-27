@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -6,9 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../../redux/actions/actionCreators';
 
-const mapDispatchToProps = (dispatch) => {
-	return bindActionCreators(actionCreators, dispatch);
-};
+const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
 const Login = ({ ...props }) => {
 	const [username, setUsername] = useState('');
@@ -21,7 +20,7 @@ const Login = ({ ...props }) => {
 		axios.post('http://localhost:5000/login', {
 			username,
 			password,
-		}).then(res => {
+		}).then((res) => {
 			if (res.data.token) {
 				localStorage.setItem('token', res.data.token);
 				props.fetchInitialData();
@@ -40,6 +39,7 @@ const Login = ({ ...props }) => {
 			<main>
 				<form className="mx-auto w-25" id="form" onSubmit={handleSubmit}>
 					<div className="form-group">
+						{/* eslint-disable-next-line */}
 						<label htmlFor="username">username</label>
 						<input
 							type="text"
@@ -47,10 +47,11 @@ const Login = ({ ...props }) => {
 							id="username"
 							name="username"
 							required
-							onChange={(e) => setUsername(e.target.value)}
+							onChange={e => setUsername(e.target.value)}
 						/>
 					</div>
 					<div className="form-group">
+						{/* eslint-disable-next-line */}
 						<label htmlFor="password">password</label>
 						<input
 							type="password"
@@ -80,6 +81,11 @@ const Login = ({ ...props }) => {
 			</main>
 		</div>
 	);
+};
+
+Login.propTypes = {
+	fetchInitialData: PropTypes.func,
+	history: PropTypes.object,
 };
 
 export default connect(null, mapDispatchToProps)(Login);

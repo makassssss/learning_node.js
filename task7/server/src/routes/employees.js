@@ -1,7 +1,7 @@
 import express from 'express';
 import models from '../models';
 import Logger from '../logger/Logger';
-import logToDB from '../logger/logToDB';
+import logToDB from '../logger/logToDB'; //eslint-disable-line import/no-cycle
 
 const router = express.Router();
 

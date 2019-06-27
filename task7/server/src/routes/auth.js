@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import models from '../models/index';
 import config from '../config';
 import Logger from '../logger/Logger';
-import logToDB from '../logger/logToDB';
+import logToDB from '../logger/logToDB'; //eslint-disable-line import/no-cycle
 
 const router = express.Router();
 
