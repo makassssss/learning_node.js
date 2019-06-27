@@ -13,11 +13,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/signup', (req, res) => {
-	res.render('index.ejs', { view: 'signup' });
+	res.render('index.ejs', { location: 'signup', view: 'signup' });
 });
 
 router.get('/login', (req, res) => {
-	res.render('index.ejs', { view: 'login' });
+	res.render('index.ejs', { location: 'login', view: 'login' });
 });
 
 router.get('/logout', (req, res) => {

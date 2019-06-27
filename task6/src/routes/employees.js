@@ -18,6 +18,7 @@ router.get('/employees-list', (req, res) => {
 	}, { transaction })).then((employees) => {
 		res.render('index.ejs',
 			{
+				location: 'list',
 				employees,
 				departmentId,
 				departmentName: department.dataValues.department_name,
@@ -56,6 +57,7 @@ router.get('/employee', (req, res) => {
 			}
 			: {};
 		res.render('index.ejs', {
+			location: 'employee',
 			employee,
 			id,
 			department,

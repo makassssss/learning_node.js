@@ -28,7 +28,6 @@
     <style type="text/css">
         #log-out {
             right: 0;
-            display: none;
         }
 
         .not-unique, .unknown-user, .validation {
@@ -41,27 +40,16 @@
 
 <body>
 
-    <a id="log-out"
-       class="btn btn-secondary position-absolute mr-3"
-       href="/logout"
-    >
-        Log Out
-    </a>
+    <% if( !(location === 'login' || location === 'signup')) { %>
+        <a id="log-out"
+           class="btn btn-secondary position-absolute mr-3"
+           href="/logout"
+        >
+            Log Out
+        </a>
+    <% } %>
 
     <%- include(view) -%>
-
-    <script>
-        $(document).ready(function() {
-        	switch (window.location.pathname) {
-                case ('/login'):
-        			return;
-                case ('/signup'):
-                	return;
-                default:
-                	return $('#log-out').css('display', 'block');
-            }
-        });
-    </script>
 
 </body>
 </html>

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/departments', (req, res) => {
 	models.departments.findAll().then((departments) => {
-		res.render('index.ejs', { departments, view: 'departments' });
+		res.render('index.ejs', { location: 'departments', departments, view: 'departments' });
 	}).then(() => {
 		logToDB('get departments');
 	}).catch((err) => {
@@ -39,7 +39,12 @@ router.get('/department', (req, res) => {
 		const departmentName = department
 			? department.dataValues.department_name
 			: '';
-		res.render('index.ejs', { name: departmentName, id, view: 'department' });
+		res.render('index.ejs', {
+			location: 'department',
+			name: departmentName,
+			id,
+			view: 'department',
+		});
 	}).then(() => {
 		logToDB('get department');
 	}).catch((err) => {
