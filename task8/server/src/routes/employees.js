@@ -1,39 +1,19 @@
 import express from 'express';
-import models from '../models';
-import Logger from '../logger/Logger';
-import logToDB from '../logger/logToDB'; //eslint-disable-line import/no-cycle
+import EmployeesService from "../services/employeesService";
 
 const router = express.Router();
+const employeesService = new EmployeesService();
 
 // Getting all existing employees
 
-router.get('/employees', (req, res) => {
-	models.employees.findAll().then((employees) => {
-		res.send(employees);
-	}).then(() => {
-		logToDB('get employees');
-	}).catch((err) => {
-		Logger.error(err);
-		res.status(500).send(err.message);
-	});
-});
-
-// Delete employee
-
-router.post('/delete-employee', (req, res) => {
-	const { id } = req.body;
-	models.employees.scope({ method: ['layOff', id] }).destroy().then(() => {
-		res.send({ success: true });
-		logToDB('delete employee');
-	}).catch((err) => {
-		Logger.error(err);
-		res.status(500).send(err.message);
-	});
+router.get('/employees', async(req, res) => {
+    const result = await employeesService.getEmployees();
+    res.send(result);
 });
 
 // Set employee
 
-router.post('/set-employee', (req, res) => {
+router.post('/set-employee', async (req, res) => {
 	const {
 		departmentId,
 		id,
@@ -42,19 +22,16 @@ router.post('/set-employee', (req, res) => {
 		birthday,
 		salary,
 	} = req.body;
-	models.employees.prototype.setEmployee(id, name, email, birthday, salary, departmentId).then((employees) => {
-		const employeeId = !id
-			? employees.dataValues.id
-			: id;
-		res.send({ success: true, id: employeeId });
-	}).then(() => {
-		id
-			? logToDB('edit employee info')
-			: logToDB('add employee');
-	}).catch((err) => {
-		res.send({ success: false, err: err.message });
-		Logger.error(err);
-	});
+	const result = await employeesService.setEmployee(id, name, email, birthday, salary, departmentId);
+	res.send(result);
+});
+
+// Delete employee
+
+router.post('/delete-employee', async (req, res) => {
+    const { id } = req.body;
+    const result = await employeesService.deleteEmployee(id);
+    res.send(result);
 });
 
 export default router;

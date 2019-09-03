@@ -15,7 +15,7 @@ const mapStateToProps = state => ({
 	employees: state.employees,
 });
 
-const EmployeesList = ({ employees, departments }) => {
+const EmployeesList = ({ employees, departments, ...props }) => {
 	const departmentId = +url.parse(window.location.search).department;
 	let departmentName = '';
 	departments.forEach((department) => {
@@ -87,7 +87,11 @@ const EmployeesList = ({ employees, departments }) => {
 								return 0;
 							}).map(employee => (
 								employee.department_id === departmentId && (
-									<EmployeeTableRow key={employee.id} employee={employee} />
+									<EmployeeTableRow
+                                        key={employee.id}
+                                        employee={employee}
+                                        {...props}
+                                    />
 								)
 							))
 						}

@@ -20,10 +20,17 @@
     "@babel/core": "^7.4.4",
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.4.4",
+    "enzyme": "^3.10.0",
+    "jest": "^24.9.0",
+    "jsdom": "^15.1.1",
+    "jsdom-global": "^3.0.2",
     "nodemon": "^1.19.0"
   },
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "babel": "babel src -d dist",
     "lint": "eslint 'src/*.js'",
     "copy-views": "cp -R src/views dist",

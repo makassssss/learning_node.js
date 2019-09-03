@@ -9,6 +9,9 @@ import * as actionCreators from '../../redux/actions/actionCreators';
 import { DepartmentTableRow } from '../../components/TableRow';
 
 const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
+const mapStateToProps = state => ({
+    departments: state.departments,
+});
 
 const Departments = ({ departments, ...props }) => {
 	const [sortName, setSortName] = useState('');
@@ -96,6 +99,4 @@ Departments.propTypes = {
 	departments: PropTypes.array,
 };
 
-export default connect(state => ({
-	departments: state.departments,
-}), mapDispatchToProps)(Departments);
+export default connect(mapStateToProps, mapDispatchToProps)(Departments);
