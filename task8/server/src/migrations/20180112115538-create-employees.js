@@ -1,4 +1,4 @@
-export default {
+module.exports = {
 	up: (queryInterface, Sequelize) => (
 		queryInterface.createTable('employees', {
 			id: {
@@ -23,10 +23,6 @@ export default {
 			salary: {
 				allowNull: false,
 				type: Sequelize.INTEGER,
-			},
-			department_id: {
-				allowNull: false,
-				type: Sequelize.STRING,
 			},
 		})
 	),

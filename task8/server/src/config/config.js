@@ -1,4 +1,4 @@
-const config = {
+module.exports = {
 	development: {
 		dialect: 'mysql',
 		username: 'root',
@@ -33,5 +33,3 @@ const config = {
 		logging: false,
 	},
 };
-
-export default config;

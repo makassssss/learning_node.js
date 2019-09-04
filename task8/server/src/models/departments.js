@@ -12,11 +12,5 @@ export default (sequelize, DataTypes) => {
 		},
 	});
 
-	departments.associate = (models) => {
-		departments.hasMany(models.employees, {
-			foreignKey: 'id',
-		});
-	};
-
 	return departments;
 };
