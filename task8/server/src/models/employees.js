@@ -13,11 +13,15 @@ export default (sequelize, DataTypes) => {
 		},
 		birthday: DataTypes.DATE,
 		salary: DataTypes.INTEGER,
-	}, {
-		scopes: {
-			layOff: id => ({ where: { id } }),
-		},
+        department_id: DataTypes.INTEGER,
 	});
+
+    employees.associate = (models) => {
+        employees.belongsTo(models.departments, {
+            foreignKey: 'department_id',
+            onDelete: 'cascade'
+        });
+    };
 
 	return employees;
 };

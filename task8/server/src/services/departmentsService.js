@@ -2,17 +2,20 @@ import models from '../models/index';
 import Logger from '../logger/Logger';
 import logToDB from '../logger/logToDB'; //eslint-disable-line import/no-cycle
 
+const model = models.departments;
+
 const error = (err) => {
     Logger.error(err);
     return {
         success: false,
         err: err.message
     }
-} ;
+};
 
 export default class DepartmentsService {
-    async getDepartments() {
-        return await models.departments.findAll()
+
+    getDepartments = () => (
+        model.findAll()
             .then(departments => {
                 logToDB('get departments');
                 return {
@@ -21,11 +24,11 @@ export default class DepartmentsService {
                 }
             })
             .catch(error)
-    }
+    );
 
-    async setDepartment(name, id) {
-        return id ? (
-            await models.departments.update(
+    setDepartment = (name, id) => (
+        id ? (
+            model.update(
                 {
                     department_name: name,
                 },
@@ -44,7 +47,7 @@ export default class DepartmentsService {
                 })
                 .catch(error)
         ) : (
-            await models.departments.create(
+            model.create(
                 {
                     department_name: name,
                     department_id: id,
@@ -59,10 +62,10 @@ export default class DepartmentsService {
                 })
                 .catch(error)
         )
-    }
+    );
 
-    async deleteDepartment(id) {
-        return await models.departments.destroy({
+    deleteDepartment = (id) => (
+        model.destroy({
             where: {
                 department_id: id
             }
@@ -74,5 +77,6 @@ export default class DepartmentsService {
                 }
             })
             .catch(error)
-    }
+    );
+
 }

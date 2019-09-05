@@ -2,17 +2,20 @@ import models from '../models/index';
 import Logger from '../logger/Logger';
 import logToDB from '../logger/logToDB'; //eslint-disable-line import/no-cycle
 
+const model = models.employees;
+
 const error = (err) => {
     Logger.error(err);
     return {
         success: false,
         err: err.message
     }
-} ;
+};
 
 export default class EmployeesService {
-    async getEmployees() {
-        return await models.employees.findAll()
+
+    getEmployees = () => (
+        model.findAll()
             .then(employees => {
                 logToDB('get employees');
                 return {
@@ -21,11 +24,11 @@ export default class EmployeesService {
                 }
             })
             .catch(error)
-    }
+    );
 
-    async setEmployee(id, name, email, birthday, salary, departmentId) {
-        return id ? (
-            await models.employees.update({
+    setEmployee = (id, name, email, birthday, salary, departmentId) => (
+        id ? (
+            model.update({
                     name,
                     email,
                     birthday,
@@ -46,7 +49,7 @@ export default class EmployeesService {
                 })
                 .catch(error)
         ) : (
-            await models.employees.create(
+            model.create(
                 {
                     name,
                     email,
@@ -65,10 +68,10 @@ export default class EmployeesService {
                 })
                 .catch(error)
         )
-    }
+    );
 
-    async deleteEmployee(id) {
-        return await models.employees.destroy({
+    deleteEmployee = (id) => (
+        model.destroy({
             where: {
                 id
             }
@@ -80,5 +83,6 @@ export default class EmployeesService {
                 }
             })
             .catch(error)
-    }
+    );
+
 }
