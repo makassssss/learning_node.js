@@ -1,5 +1,5 @@
 import express from 'express';
-import DepartmentsService from "../services/departmentsService";
+import DepartmentsService from '../services/departmentsService';
 
 const router = express.Router();
 const departmentsService = new DepartmentsService();

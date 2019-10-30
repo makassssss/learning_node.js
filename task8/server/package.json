@@ -4,6 +4,10 @@
   "description": "task2 with express",
   "main": "server.js",
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "@babel/runtime": "^7.6.0",
+    "axios": "^0.19.0",
+    "babel-polyfill": "^6.26.0",
     "bcrypt": "^3.0.6",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.4",
@@ -27,11 +31,8 @@
     "jsdom-global": "^3.0.2",
     "nodemon": "^1.19.0"
   },
-  "jest": {
-    "testEnvironment": "jsdom"
-  },
   "scripts": {
-    "test": "jest",
+    "test": "jest --detectOpenHandles --forceExit",
     "babel": "babel src -d dist",
     "lint": "eslint 'src/*.js'",
     "copy-views": "cp -R src/views dist",
