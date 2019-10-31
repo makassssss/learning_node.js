@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../../redux/actions/actionCreators';
 import { DepartmentTableRow } from '../../components/TableRow';
+import Chat from '../Chat';
 
 const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 const mapStateToProps = state => ({
@@ -22,6 +23,7 @@ const Departments = ({ departments, ...props }) => {
 	};
 	return (
 		<div className="departments">
+            <Chat />
 			<header>
 				<h3 className="my-4 text-center">Departments</h3>
 			</header>
