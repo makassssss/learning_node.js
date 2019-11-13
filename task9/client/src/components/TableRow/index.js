@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import Portal from '../Portal';
+import Modal from '../Modal';
 import DeleteItemModal from '../DeleteItemModal';
 
 export const DepartmentTableRow = ({ department, deleteDepartment }) => {
@@ -38,12 +39,17 @@ export const DepartmentTableRow = ({ department, deleteDepartment }) => {
 				</td>
 			</tr>
 			<Portal open={modalOpen}>
-				<DeleteItemModal
-					item="department"
-					id={id}
-					handleClose={() => setModalOpen(false)}
-					handleDelete={() => deleteDepartment(id)}
-				/>
+				<Modal
+                    size="sm"
+                    handleClose={() => setModalOpen(false)}
+                >
+                    <DeleteItemModal
+                        item="department"
+                        id={id}
+                        handleClose={() => setModalOpen(false)}
+                        handleDelete={() => deleteDepartment(id)}
+                    />
+                </Modal>
 			</Portal>
 		</>
 	);
@@ -93,6 +99,7 @@ export const EmployeeTableRow = ({ employee, deleteEmployee }) => {
 			</tr>
 			<Portal open={modalOpen}>
 				<DeleteItemModal
+                    size="sm"
 					handleClose={() => setModalOpen(false)}
 					handleDelete={() => deleteEmployee(id)}
 				/>

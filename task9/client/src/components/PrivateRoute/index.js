@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState }from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../../redux/actions/actionCreators';
 import checkAuth from '../../helpers/auth';
+import Chat from "../../containers/Chat";
 
 const mapStateToProps = state => ({
 	isLoading: state.isLoading,
@@ -13,6 +14,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 
 const PrivateRoute = ({ ...props }) => {
+
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
 	const handleLogOutClick = () => {
 		localStorage.removeItem('token');
@@ -25,6 +28,7 @@ const PrivateRoute = ({ ...props }) => {
 		isAuthorized
 			? (
 				<>
+                    <Chat isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)}/>
 					<span
 						id="log-out"
 						className="btn btn-secondary position-absolute mr-3"

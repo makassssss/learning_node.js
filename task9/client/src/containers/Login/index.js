@@ -22,6 +22,7 @@ const Login = ({ ...props }) => {
 			password,
 		}).then((res) => {
 			if (res.data.token) {
+			    localStorage.setItem('username', username);
 				localStorage.setItem('token', res.data.token);
 				props.fetchInitialData();
 				props.history.push('/');

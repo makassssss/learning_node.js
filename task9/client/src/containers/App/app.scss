@@ -31,10 +31,19 @@ a, a:hover {
   width: 100%;
 }
 
-#log-out {
+#log-out, .close {
   right: 0;
+  z-index: 100;
+}
+
+#chat-open-button {
+  right: 100px;
 }
 
 .modal {
   display: block;
 }
+
+//.messages {
+//  height: 400px;
+//}
