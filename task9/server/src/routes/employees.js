@@ -13,7 +13,7 @@ router.get('/employees', async(req, res) => {
 
 // Set employee
 
-router.post('/set-employee', async (req, res) => {
+router.post('/setEmployee', async (req, res) => {
 	const {
 		departmentId,
 		id,
@@ -28,7 +28,7 @@ router.post('/set-employee', async (req, res) => {
 
 // Delete employee
 
-router.post('/delete-employee', async (req, res) => {
+router.post('/deleteEmployee', async (req, res) => {
     const { id } = req.body;
     const result = await employeesService.deleteEmployee(id);
     res.send(result);

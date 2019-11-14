@@ -8,15 +8,14 @@ import {
 	Redirect,
 	withRouter,
 } from 'react-router';
-
+import PrivateRoute from 'components/PrivateRoute';
+import SignUp from 'containers/SignUp';
+import Login from 'containers/Login';
+import Departments from 'containers/Departments';
+import EmployeesList from 'containers/EmployeesList';
+import Department from 'containers/Department';
+import Employee from 'containers/Employee';
 import * as actionCreators from '../../redux/actions/actionCreators';
-import PrivateRoute from '../../components/PrivateRoute';
-import SignUp from '../SignUp';
-import Login from '../Login';
-import Departments from '../Departments';
-import EmployeesList from '../EmployeesList';
-import Department from '../Department';
-import Employee from '../Employee';
 import checkAuth from '../../helpers/auth';
 import department from '../../assets/department.jpg';
 

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import Portal from '../Portal';
-import Modal from '../Modal';
-import DeleteItemModal from '../DeleteItemModal';
+import Portal from 'components/Portal';
+import Modal from 'components/Modal';
+import DeleteItemModal from 'components/DeleteItemModal';
 
 export const DepartmentTableRow = ({ department, deleteDepartment }) => {
 	const { department_id: id, department_name: name } = department;

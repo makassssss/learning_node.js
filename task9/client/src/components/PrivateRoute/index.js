@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../../redux/actions/actionCreators';
 import checkAuth from '../../helpers/auth';
-import Chat from "../../containers/Chat";
+import Chat from 'containers/Chat';
 
 const mapStateToProps = state => ({
 	isLoading: state.isLoading,

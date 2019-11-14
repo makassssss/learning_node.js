@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const Modal = ({ handleClose, size, children }) => (
     <div className="modal">
@@ -12,5 +13,15 @@ const Modal = ({ handleClose, size, children }) => (
         </div>
     </div>
 );
+
+Modal.defaultProps = {
+    size: 'default',
+};
+
+Modal.propTypes = {
+    size: PropTypes.string,
+    handleClose: PropTypes.func,
+    children: PropTypes.node,
+};
 
 export default Modal;

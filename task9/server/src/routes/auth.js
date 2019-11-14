@@ -7,12 +7,12 @@ import Logger from '../logger/Logger';
 import logToDB from '../logger/logToDB'; //eslint-disable-line import/no-cycle
 
 const router = express.Router();
-
+const model = models.users;
 // Authorization
 
 router.post('/login', (req, res) => {
 	const { username, password } = req.body;
-	models.users.find({
+	model.findOne({
 		where: {
 			username,
 		},
@@ -41,7 +41,7 @@ router.post('/login', (req, res) => {
 
 router.post('/signup', (req, res) => {
 	const { username, password } = req.body;
-	models.users.create({
+	model.create({
 		username,
 		password: bcrypt.hashSync(password, 10),
 	}).then(() => {

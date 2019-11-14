@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../../redux/actions/actionCreators';
-import { EmployeeTableRow } from '../../components/TableRow';
+import { EmployeeTableRow } from 'components/TableRow';
 
 const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
 const mapStateToProps = state => ({

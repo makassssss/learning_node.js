@@ -9,7 +9,7 @@ export default function employees(state = [], action) {
 	};
 	switch (action.type) {
 		case 'PUT_DATA_TO_STORE':
-			return [...action.employees];
+			return [...action.payload.employees];
 		case 'DELETE_EMPLOYEE_DONE':
 			return [...state.filter(i => i.id !== action.id)];
 		case 'SET_EMPLOYEE_DONE':

@@ -13,7 +13,7 @@ router.get('/departments', async (req, res) => {
 
 // Add or edit department
 
-router.post('/set-department', async (req, res) => {
+router.post('/setDepartment', async (req, res) => {
 	const { id, name } = req.body;
 	const result = await departmentsService.setDepartment(name, id);
 	res.send(result);
@@ -21,7 +21,7 @@ router.post('/set-department', async (req, res) => {
 
 // Delete department
 
-router.post('/delete-department', async (req, res) => {
+router.post('/deleteDepartment', async (req, res) => {
     const { id } = req.body;
     const result = await departmentsService.deleteDepartment(id);
     res.send(result);

@@ -1,10 +1,16 @@
 import React from 'react';
-import axios from 'axios';
+import PropTypes from 'prop-types';
 import io from 'socket.io-client';
-import Portal from '../../components/Portal';
-import Modal from '../../components/Modal';
+import Portal from 'components/Portal';
+import Modal from 'components/Modal';
+import apiCall from 'API';
 
 const Message = ({ author, text }) => <div>{author}: {text}</div>;
+
+Message.propTypes = {
+    author: PropTypes.string,
+    text: PropTypes.string,
+};
 
 const Contacts = ({ users, onSelect }) => (
     <div>
@@ -15,6 +21,11 @@ const Contacts = ({ users, onSelect }) => (
         }
     </div>
 );
+
+Contacts.propTypes = {
+    users: PropTypes.array,
+    onSelect: PropTypes.func,
+};
 
 class Chat extends React.Component {
 
@@ -34,35 +45,21 @@ class Chat extends React.Component {
     }
 
     async componentDidMount() {
-        const users = await axios.get('http://localhost:5000/api/getChatUsers', {
-            headers: {
-                'Authorization': localStorage.getItem('token'),
-            }
-        })
-            .then(res => res.data);
-
+        const users = await apiCall('getChatUsers');
         this.setState({
             users
         });
     }
 
     getHistory = async (user1, user2) => {
-        const history = await axios.post('http://localhost:5000/api/getHistory', {
-            user1,
-            user2
-        }, {
-            headers: {
-                'Authorization': localStorage.getItem('token'),
-            }
-        })
-            .then(res => res.data);
+        const history = await apiCall('getHistory', 'POST', { user1, user2 });
         this.setState({
             messages: history,
         })
     };
 
     handleSelect = async (e, value) => {
-        const user = localStorage.getItem('username');
+        const { user } = this.state;
         let contact;
         if (value !== null) {
             contact = e.target.innerHTML;
@@ -74,9 +71,11 @@ class Chat extends React.Component {
     };
 
     addMessage = (message) => {
-        const { contact } = this.state;
-        const user = localStorage.getItem('username');
-        if ((message.from === user && message.to === contact) || (message.from === contact && message.to === user)) {
+        const { user, contact } = this.state;
+        if (
+            message.from === user && message.to === contact
+            || message.from === contact && message.to === user
+        ) {
             this.setState(prevState => ({
                 messages: prevState.messages.concat([message])
             }));
@@ -85,10 +84,9 @@ class Chat extends React.Component {
 
     sendMessage = (e) => {
         e.preventDefault();
-        const { message, contact } = this.state;
-        const author = localStorage.getItem('username');
+        const { user, contact, message } = this.state;
         this.socket.emit('SEND_MESSAGE', {
-            from: author,
+            from: user,
             to: contact,
             text: message
         });
@@ -107,20 +105,22 @@ class Chat extends React.Component {
         const { messages, users, contact } = this.state;
         const { isOpen, onToggle } = this.props;
         return (
-            <React.Fragment>
+            <>
                 <Portal open={isOpen}>
                     <Modal handleClose={onToggle}>
                         <div className="modal-body">
                             {
                                 contact ? (
                                     <React.Fragment>
-                                        <div>Conversation with <b>{contact.toUpperCase()}</b></div>
-                                        <button
-                                            className="btn btn-secondary btn-sm mb-3"
-                                            onClick={(e) => this.handleSelect(e, null)}
-                                        >
-                                            change contact
-                                        </button>
+                                         <span
+                                             className="btn btn-secondary btn-sm position-absolute"
+                                             onClick={(e) => this.handleSelect(e, null)}
+                                         >
+                                                {`<`}
+                                            </span>
+                                        <div className="text-center mb-4">
+                                            Conversation with <b>{contact.toUpperCase()}</b>
+                                        </div>
                                         <div className="messages">
                                             {
                                                 messages && messages.map((message, i) =>
@@ -136,8 +136,7 @@ class Chat extends React.Component {
                                                 value={this.state.message}
                                                 onChange={this.handleChange}
                                             />
-                                            <br/>
-                                            <button className="btn btn-secondary form-control">Send</button>
+                                            <button className="btn btn-secondary mt-2">Send</button>
                                         </form>
                                     </React.Fragment>
                                 ) : (
@@ -154,9 +153,14 @@ class Chat extends React.Component {
                 >
                     Open Chat
                 </span>
-            </React.Fragment>
+            </>
         )
     }
 }
+
+Chat.propTypes = {
+    isOpen: PropTypes.bool,
+    onToggle: PropTypes.func,
+};
 
 export default Chat;

@@ -9,6 +9,7 @@ const Portal = ({ open, children }) => (
 
 Portal.propTpyes = {
 	open: PropTypes.bool,
+    children: PropTypes.node,
 };
 
 export default Portal;

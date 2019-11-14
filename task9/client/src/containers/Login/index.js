@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../../redux/actions/actionCreators';
@@ -22,8 +21,8 @@ const Login = ({ ...props }) => {
 			password,
 		}).then((res) => {
 			if (res.data.token) {
+                localStorage.setItem('token', res.data.token);
 			    localStorage.setItem('username', username);
-				localStorage.setItem('token', res.data.token);
 				props.fetchInitialData();
 				props.history.push('/');
 			} else if (res.data === 'unknown user') {
