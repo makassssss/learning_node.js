@@ -14,6 +14,7 @@ Message.propTypes = {
 
 const Contacts = ({ users, onSelect }) => (
     <div>
+        Your Contacts:
         {
             users.map(user => (
                 <div key={user} onClick={onSelect}>{user}</div>
@@ -119,7 +120,7 @@ class Chat extends React.Component {
                                                 {`<`}
                                             </span>
                                         <div className="text-center mb-4">
-                                            Conversation with <b>{contact.toUpperCase()}</b>
+                                            Chat with <b>{contact.toUpperCase()}</b>
                                         </div>
                                         <div className="messages">
                                             {
