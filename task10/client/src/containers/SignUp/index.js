@@ -1,32 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import * as actions from '../../redux/actions/actionCreators';
 
 const SignUp = () => {
 
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
-	const [showValidationError, setShowValidationError] = useState(false);
-	const [showValidationSuccess, setShowValidationSuccess] = useState(false);
+	const { fail, addSuccess: success } = useSelector(state => ({
+        fail: state.fail.signup,
+        addSuccess: state.addSuccess.user
+	}));
+	const dispatch = useDispatch();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		setShowValidationError(false);
-		setShowValidationSuccess(false);
-		axios.post('http://localhost:5000/signup', {
-			username,
-			password,
-		}).then((res) => {
-			if (res.data === 'username must be unique') {
-				throw res.data;
-			} else {
-				setShowValidationSuccess(true);
-			}
-		}).catch((err) => {
-			err === 'username must be unique'
-				? setShowValidationError(true)
-				: console.log(err);
-		});
+		dispatch(actions.signup(username, password));
 	};
 
 	return (
@@ -40,7 +29,7 @@ const SignUp = () => {
 						{/* eslint-disable-next-line */}
 						<label htmlFor="username">username</label>
 						{
-							showValidationError && (
+							fail && (
 								<span className="validation not-unique pl-4">Value must be unique</span>
 							)
 						}
@@ -75,7 +64,7 @@ const SignUp = () => {
 							<span className="link ml-4">Log in</span>
 						</Link>
 						{
-							showValidationSuccess && (
+                            success && (
 								<span className="validation success pl-4">New user has been created</span>
 							)
 						}
