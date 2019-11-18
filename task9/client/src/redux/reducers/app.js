@@ -7,21 +7,33 @@ export function isLoading(state = true, action) {
     }
 }
 
-export function fail(state = { department: false, employee: false }, action) {
+const failInitialState = {
+    signup: false,
+    login: false,
+    department: false,
+    employee: false
+};
+export function fail(state = failInitialState, action) {
     switch (action.type) {
+        case 'SIGNUP_FAIL':
+            return { ...state, signup: true };
+        case 'LOGIN_FAIL':
+            return { ...state, login: true };
         case 'SET_DEPARTMENT_FAIL':
             return { ...state, department: true };
         case 'SET_EMPLOYEE_FAIL':
             return { ...state, employee: true };
         case 'CLEAR_STATUS':
-            return { department: false, employee: false };
+            return failInitialState;
         default:
             return state;
     }
 }
 
-export function addSuccess(state = { department: false, employee: false }, action) {
+export function addSuccess(state = { department: false, employee: false, user: false }, action) {
     switch (action.type) {
+        case 'SIGNUP_DONE':
+            return { ...state, user: true };
         case 'ADD_DEPARTMENT_DONE':
             return { ...state, department: true };
         case 'ADD_EMPLOYEE_DONE':

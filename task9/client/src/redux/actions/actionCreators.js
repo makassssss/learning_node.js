@@ -11,6 +11,29 @@ export const SET_EMPLOYEE = 'SET_EMPLOYEE';
 export const SET_EMPLOYEE_DONE = 'SET_EMPLOYEE_DONE';
 export const SET_EMPLOYEE_FAIL = 'SET_EMPLOYEE_FAIL';
 export const CLEAR_STATUS = 'CLEAR_STATUS';
+export const SIGNUP = 'SIGNUP';
+export const SIGNUP_DONE = 'SIGNUP_DONE';
+export const SIGNUP_FAIL = 'SIGNUP_FAIL';
+export const LOGIN = 'LOGIN';
+export const LOGIN_DONE = 'LOGIN_DONE';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
+
+export const signup = (username, password) => ({
+    type: 'SIGNUP',
+    payload: {
+        username,
+        password
+    }
+});
+
+export const login = (username, password, history) => ({
+    type: 'LOGIN',
+    payload: {
+        username,
+        password,
+        history
+    }
+});
 
 export const clearStatus = () => ({
     type: 'CLEAR_STATUS',
@@ -43,13 +66,6 @@ export const setDepartment = (id, name, history) => ({
     }
 });
 
-const setDepartmentFail = err => ({
-    type: 'SET_DEPARTMENT_FAIL',
-    payload: {
-        err
-    }
-});
-
 export const setEmployee = (departmentId, id, name, email, birthday, salary, history) => ({
     type: 'SET_EMPLOYEE',
     payload: {
@@ -60,12 +76,5 @@ export const setEmployee = (departmentId, id, name, email, birthday, salary, his
         birthday,
         salary,
         history,
-    }
-});
-
-const setEmployeeFail = err => ({
-    type: 'SET_EMPLOYEE_FAIL',
-    payload: {
-        err
     }
 });

@@ -1,34 +1,18 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actionCreators from '../../redux/actions/actionCreators';
-
-const mapDispatchToProps = dispatch => bindActionCreators(actionCreators, dispatch);
+import { useSelector, useDispatch } from 'react-redux';
+import * as actions from '../../redux/actions/actionCreators';
 
 const Login = ({ ...props }) => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
-	const [showValidationError, setShowValidationError] = useState(false);
+	const dispatch = useDispatch();
+    const fail = useSelector(state => state.fail.login);
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		setShowValidationError(false);
-		axios.post('http://localhost:5000/login', {
-			username,
-			password,
-		}).then((res) => {
-			if (res.data.token) {
-                localStorage.setItem('token', res.data.token);
-			    localStorage.setItem('username', username);
-				props.fetchInitialData();
-				props.history.push('/');
-			} else if (res.data === 'unknown user') {
-				setShowValidationError(true);
-			}
-		}).catch(err => console.log(err));
+		dispatch(actions.login(username, password, props.history));
 	};
 
 	return (
@@ -72,7 +56,7 @@ const Login = ({ ...props }) => {
 							<span className="link ml-4">Sign up</span>
 						</Link>
 						{
-							showValidationError && (
+                            fail && (
 								<span className="validation unknown-user pl-4">Invalid username or password!</span>
 							)
 						}
@@ -88,4 +72,4 @@ Login.propTypes = {
 	history: PropTypes.object,
 };
 
-export default connect(null, mapDispatchToProps)(Login);
+export default Login;

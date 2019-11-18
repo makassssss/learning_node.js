@@ -1,12 +1,11 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:5000/api';
-
+axios.defaults.baseURL = 'http://localhost:5000';
 const error = (err) => console.log(err);
-const apiCall = (url, method = 'GET', data) => {
+const apiCall = (url, method = 'GET', data, auth = false) => {
     return axios({
         method,
-        url,
+        url: auth ? url : `/api/${url}`,
         data,
         headers: {
             Authorization: localStorage.getItem('token')
