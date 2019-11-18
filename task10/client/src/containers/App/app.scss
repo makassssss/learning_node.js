@@ -43,3 +43,12 @@ a, a:hover {
 .modal {
   display: block;
 }
+
+.contact {
+  display: inline-block;
+  margin: 0 10px;
+  cursor: pointer;
+  &:hover {
+    text-shadow: 0 0 .9px #333, 0 0 .9px #333, 0 0 .9px #333;
+  }
+}
