@@ -17,7 +17,13 @@ const Contacts = ({ users, onSelect }) => (
         Your Contacts:
         {
             users.map(user => (
-                <div key={user} onClick={onSelect}>{user}</div>
+                <div
+                    key={user}
+                    className="contact"
+                    onClick={onSelect}
+                >
+                    {user}
+                </div>
             ))
         }
     </div>
