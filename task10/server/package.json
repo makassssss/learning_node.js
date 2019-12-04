@@ -13,10 +13,11 @@
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "ejs": "^2.5.7",
+    "env-cmd": "^10.0.1",
     "express": "^4.16.2",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^1.5.1",
-    "sequelize": "^4.31.0",
+    "sequelize": "^4.44.3",
     "socket.io": "^2.3.0",
     "winston": "^2.4.0"
   },
@@ -38,7 +39,7 @@
     "lint": "eslint 'src/*.js'",
     "copy-views": "cp -R src/views dist",
     "build": "npm run babel && npm run copy-views",
-    "dev": "nodemon --exec babel-node src/server.js",
+    "dev": "env-cmd nodemon --exec babel-node src/server.js",
     "prod": "npm run build && node dist/server.js"
   },
   "author": "Maxim Babichev",

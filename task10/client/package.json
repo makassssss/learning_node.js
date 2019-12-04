@@ -6,6 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.21",
     "@fortawesome/free-solid-svg-icons": "^5.10.1",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "assert": "^2.0.0",
     "axios": "^0.19.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "history": "^4.9.0",
@@ -31,10 +32,19 @@
     "@babel/plugin-syntax-throw-expressions": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
+    "@wdio/cli": "^5.16.11",
+    "@wdio/cucumber-framework": "^5.16.11",
+    "@wdio/local-runner": "^5.16.11",
+    "@wdio/mocha-framework": "^5.16.11",
+    "@wdio/selenium-standalone-service": "^5.16.10",
+    "@wdio/spec-reporter": "^5.16.11",
+    "@wdio/sync": "^5.16.11",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
     "babel-polyfill": "^6.26.0",
+    "chromedriver": "^78.0.1",
     "css-loader": "^2.1.1",
+    "cucumber": "^6.0.5",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "file-loader": "^4.0.0",
@@ -47,13 +57,16 @@
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.33.0",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.9.0"
   },
   "jest": {
     "testEnvironment": "jsdom"
   },
   "scripts": {
-    "test": "jest",
+    "test:unit": "jest",
+    "test:wdio": "wdio wdio.conf.js",
+    "test:cucumber": "cucumber-js",
     "dev": "webpack && webpack-dev-server",
     "build": "NODE_ENV=production webpack"
   }
