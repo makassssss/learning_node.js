@@ -64,9 +64,8 @@
     "testEnvironment": "jsdom"
   },
   "scripts": {
-    "test:unit": "jest",
+    "test:jest": "jest",
     "test:wdio": "wdio wdio.conf.js",
-    "test:cucumber": "cucumber-js",
     "dev": "webpack && webpack-dev-server",
     "build": "NODE_ENV=production webpack"
   }
